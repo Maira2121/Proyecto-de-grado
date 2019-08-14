@@ -1,0 +1,65 @@
+{% load staticfiles %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/response.min.css' %}">
+{% endblock %}
+{% if pregunta.tipo_pregunta == "unica" %}
+    {% for opcion in opciones %}
+        <div>
+            <input type="radio" value="{{ opcion }}">
+            <span for="{{ opcion }}">{{ opcion }}</span>
+        </div>
+    {% endfor %}
+{% elif pregunta.tipo_pregunta  == "multi" %}
+    {% for opcion in opciones %}
+        <div>
+            <input type="checkbox" value="{{ opcion }}">
+            <span for="{{ opcion }}">{{ opcion }}</span>
+        </div>
+    {% endfor %}
+{% elif pregunta.tipo_pregunta == "ranking" %}
+ {% for opcion in opciones %}
+        <ul id="sortable" class="q_sortable ui-sortable">
+
+            <li class="ui-sortable-handle ui-accordion"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span> {{ opcion }}</li>
+
+        </ul>
+{% endfor %}
+{% elif pregunta.tipo_pregunta == "numerica" %}
+    {% for opcion in opciones %}
+        <div>
+        <ol>
+            <li class="answer-range">{{ opcion.texto_opcion }} <input type="range" class="answer-range" min="{{ opcion.valor_inicio }}" max="{{ opcion.valor_final }}" step="1" list="tickmarks">
+            <datalist id="tickmarks">
+                {% for i in i|rjust:opcion.valor_final %}
+                    <option value="{{ forloop.counter }}">
+                {% endfor %}
+            </datalist></li>
+        </ol>
+        </div>
+    {% endfor %}
+{% elif pregunta.tipo_pregunta == "escala" %}
+    <p><span>Opciones de respuesta</span></p>
+    {% for opcion in opciones %}
+        <div>
+            <input type="radio" value="{{ opcion }}">
+            <span for="{{ opcion }}">{{ opcion }}</span>
+        </div>
+    {% endfor %}
+{% elif pregunta.tipo_pregunta == "texto" %}
+        <div>
+            <textarea cols="50" rows="3"></textarea>
+        </div>
+{% endif %}
+
+{% block extra_js %}
+    <script src="{% static 'js/delphi/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/delphi/jquery-1.12.4.js' %}"></script>
+    <script>
+        $(function () {
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+        });
+    </script>
+{% endblock %}

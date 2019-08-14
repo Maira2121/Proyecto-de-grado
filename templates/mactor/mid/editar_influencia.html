@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if mid.idActorX.idEstudio.estado is True and usuario != '' and usuario != 'COORDINADOR' %}
+            <div class="matter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="widget-head">
+                                <div class="box-header with-border">
+                                  <h3 class="box-title">Editar relación de influencia directa </h3>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="padd">
+										<hr/>
+										<!-- Form starts.  -->
+                                {% include 'mactor/../../messages.html' %}
+
+                                {% if mid %}
+                                    <form class="form-horizontal" role="form" method="post">
+                                        {% csrf_token %}
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    {{form.idActorY.erros}}
+                                                    <label class="control-label" style="text-align: left">Influencia del actor*</label>
+                                                    <input class="form-control" readonly value="{{ mid.idActorY.nombreLargo }}">
+                                                    <input hidden class="col-sm-1" type="number" name="idActorY" id="id_idActorY" value="{{ mid.idActorY.id }}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    {{form.idActorX.errors}}
+                                                    <label class="control-label" style="text-align: left">Sobre el actor*</label>
+                                                    <input class="form-control" readonly value="{{ mid.idActorX.nombreLargo }}">
+                                                    <input hidden class="col-sm-1" type="number" name="idActorX" id="id_idActorX" value="{{ mid.idActorX.id }}">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2 col-md-offset-1">
+                                                <div class="form-group">
+                                                    {{form.valor|as_crispy_field }}
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Justificación*</label>
+                                                    {{form.justificacion}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div  class="row">
+                                            <div class="col-md-3 col-md-offset-1" hidden>
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Experto</label>
+                                                    <input class="form-control" type="text" value="{{user.id}}" name="idExperto">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                         <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-3">
+                                                <a class="btn btn-success" href="{% url 'mactor:influenciasMID' mid.idActorX.idEstudio.id %}" title="Influencias directas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                                <button type="submit" class="btn btn-primary" title="Guardar"><i class="fa fa-save"></i> Guardar</button>
+                                                <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                {% endif %}
+
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+                <!--INICIO MODAL AYUDA--------------------------->
+
+		        <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Influencias directas</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							  <p>Registre las influencias directas
+										entre los actores, a partir de la tabla de estrategias elaborada anteriormente.
+										Se definen cinco niveles de relaciones entre los actores según el grado de influencia
+										así: un actor tiene poca o ninguna influencia sobre otro (0), un actor puede poner
+										en riesgo de forma limitada los procesos operativos de gestión de otro (1), un actor
+										puede poner en riesgo el éxito de los proyectos de otro actor (2), un actor puede
+										poner en riesgo el cumplimiento de las misiones de otro actor (3) y por último un
+										actor puede poner en riesgo la existencia o permanencia de otro (4) (Godet y Durance,
+										2009).
+                              </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+            </div>
+</div>
+
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+{% endblock %}
+
+

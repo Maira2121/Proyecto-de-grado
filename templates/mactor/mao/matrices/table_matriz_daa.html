@@ -1,0 +1,41 @@
+
+<table class="table table-bordered" id="matriz_daa">
+                  <thead>
+                    <tr>
+                        {%if actores %}
+                            <input style='text-align: center;' size="4" readonly value="">
+                            {% for actor in actores %}
+                                <input id="ver{{actor.id}}" style='text-align: center; background-color: #5e5e5e; color: white' readonly type="text"
+                                       title="{{actor.nombreLargo|upper}}" size="4" value="{{actor.nombreCorto}}"
+                                       data-toggle="modal" href="#modal_ConsultarActor">
+                            {% endfor %}
+                        {% endif %}
+                        <br>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if valores_daa %}
+                        {% for fila in valores_daa %}
+                            {% for celda in fila %}
+                                <tr>
+                                    {% if celda.posicion == 0 and celda.valor != 'Di' %}
+                                        <input id="caa{{celda.valor}}" style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion|upper}}"
+                                               value="{{celda.valor}}" data-toggle="modal" href="#modal_ConsultarActor">
+                                    {% elif celda.valor == 'Di' %}
+                                        <input style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion}}" value="{{celda.valor}}">
+                                    {% else %}
+                                        <input style='text-align: center;' readonly type="text" size="4" value="{{celda.valor}}" title="{{celda.descripcion}}">
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            <br>
+                        {% endfor %}
+                    {% else %}
+                        {% if numero_matriz < 3 %}
+                            <h3>Finalice el registro de las relaciones {{ numero_matriz }}MAO para visualizar la matriz {{ numero_matriz }}DAA.</h3>
+                        {% else %}
+                            <h3>Finalice la matriz MID y 2MAO para visualizar la matriz 3DAA.</h3>
+                        {% endif %}
+                    {% endif %}
+                  </tbody>
+              </table>

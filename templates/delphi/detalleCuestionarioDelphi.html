@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block titulo_principal %}
+    {% trans 'Delphi:' %} {{ object.delphi }}
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Detalles del estudio: {{ object.delphi }}, {{ object.nombre }}</a>
+{% endblock %}
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    <div class="matter">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="widget wblue ">
+                        <div class="widget-head">
+                            <div class="pull-left">Preguntas</div>
+                            <div class="widget-icons pull-right">
+                                <a href = "{% url 'delphi:agregar_pregunta' cuestionario.id %}"> <i class="fa fa-plus-circle"></i></a>
+                                <a href = "#" class="wminimize"><i class="fa fa-chevron-up"></i></a>
+                                <a href = "#" class="wclose"><i class="fa fa-times"></i></a>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="widget-content">
+                            <table class="table table-bordered" id="tbRondas">
+                                <thead>
+                                <tr>
+                                    <th><b>Numero</b></th>
+                                    <th style="text-align:center;"><b>Abierta</b></th>
+                                    <th><b>Fecha Inicio</b></th>
+                                    <th><b>Fecha Final</b></th>
+                                <th><b>Opciones</b></th>
+                                </tr>
+                                <tbody>
+                                {% if ronda %}
+                                {% for ronda in ronda %}
+                                    <tr id="tr{{ronda.id}}">
+                                        <td>{{ronda.numero}}</td>
+                                        {% if ronda.abierto %}
+                                            <td style="text-align:center;"><i class=" fa fa-check"></i> </td>
+                                        {% else %}
+                                            <td style="text-align:center;"><i class=" fa fa-times"></i></td>
+                                        {% endif %}
+                                        <td>{{ronda.fecha_inicio}}</td>
+                                        <td>{{ronda.fecha_final}}</td>
+                                        <td>
+                                            <a class="label label-default" href="{% url 'delphi:nuevo_estudio_delphi' %}"> <i class="fa fa-pencil"></i></a>
+                                            <a class="label label-warning" href="{% url 'delphi:editar_ronda' %}"> <i class="fa fa-pencil"></i></a>
+                                            <a href="#modaleliminar" role ="button" class="label label-danger" data-toggle="modal" id="{{delphi.id}}" data-name="{{delphi.titulo}}"><i class=" fa fa-times"></i></a>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                            <h1>Aún no se han creado rondas para este cuestionario</h1>
+                            {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="widget wred hidden">
+                        <div class="widget-head">
+                            <div class="pull-left">Resultados</div>
+                            <div class="widget-icons pull-right">
+
+                                <a href="#" class="wminimize"><i class="fa fa-chevron-up"></i></a>
+                                <a href="#" class="wclose"><i class="fa fa-times"></i></a>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="widget-content">
+                            <table class="table table-bordered" id="tbEstudios">
+                                <thead>
+                                <tr>
+                                <th>#</th>
+                                    <th><b>Titulo</b></th>
+                                    <th><b>Proyecto</b></th>
+                                <th style="text-align:center;"><b>Abierto</b></th>
+                                <th><b>Opciones</b></th>
+                                </tr>
+                                <tbody>
+                                {% if resultado %}
+                                {% for resultado in resultado %}
+                                    <tr id="tr{{delphi.id}}">
+                                        <td>{{delphi.id}}</td>
+                                        <td>{{delphi.titulo}}</td>
+                                        <td>{{delphi.proyecto}}</td>
+                                        {% if delphi.abierto %}
+                                            <td style="text-align:center;"><i class=" fa fa-check"></i> </td>
+                                        {% else %}
+                                            <td style="text-align:center;"><i class=" fa fa-times"></i></td>
+                                        {% endif %}
+                                        <td>
+                                            <a class="label label-success" href="{% url 'delphi:nuevo_estudio_delphi' %}"><i class="fa fa-plus"></i></a>
+                                            <a class="label label-warning" href="{% url 'delphi:nuevo_estudio_delphi' %}"> <i class="fa fa-pencil"></i></a>
+                                            <a href="#modaleliminar" role ="button" class="label label-danger" data-toggle="modal" id="{{delphi.id}}" data-name="{{delphi.titulo}}"><i class=" fa fa-times"></i></a>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                            <h1>Aún no hay Resultados para este estudio Delphi</h1>
+                            {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="widget-foot">
+                            <ul class="pagination pull-right">
+                                <li>
+                                    {% if page_obj.has_previous %}
+                                    <a href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                                    {% endif %}
+                                <li>
+                                    {% if page_obj.has_next %}
+                                    <a href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                                    {% endif %}
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

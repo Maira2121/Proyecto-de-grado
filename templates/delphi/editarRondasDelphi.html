@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block titulo_principal %}
+    Crear estudio de Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Delphi</a>
+{% endblock %}
+<head>
+    {% block extra_css %}
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+    {% endblock %}
+</head>
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+
+{% block content %}
+    <form class="form-horizontal" role="form" method="POST" action="">{% csrf_token %}
+        <div class="box">
+            <div class="box-header">
+                <i class="fa fa-plus-sign"></i> Rondas
+            </div>
+            <div class="box-body">
+                <div class="col-md-8 ">
+                    <label class="control-label">Cuestionario</label>
+                    <input class="form-control" name="cuestionario" value="{{ cuestionario }}" disabled>
+                    <input class="form-control hidden" name="delphi" value="{{ delphi }}" disabled>
+                </div>
+                <div class="col-md-8 ">
+                        <label class="control-label">Descripción</label>
+                        {{ form.descripcion }}
+                </div>
+                <div class="form-group col-md-10">
+                    <div class="col-md-4 ">
+                        <label class="control-label">Fecha Inicio</label>
+                        {{ form.fecha_inicio }}
+                    </div>
+                    <div class=" col-sm-4   ">
+                        <label class="control-label">Fecha Final</label>
+                        {{ form.fecha_final }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Abierto</label>
+                        {{ form.abierto }}
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer">
+
+                <a href="{% url 'delphi:rondas' object.id %}">
+                    <button type="button" id="" class="btn btn-warning"><i class="fa fa-warning"></i>Cancelar
+                    </button>
+                    <button type="submit" id="" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+                </a>
+
+            </div>
+        </div>
+    </form>
+{% endblock %}

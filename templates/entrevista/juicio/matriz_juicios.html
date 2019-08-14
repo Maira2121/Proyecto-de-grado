@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+    {% if usuario == 'COORDINADOR' %}
+        <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Matriz de juicios</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+            {% if matriz != 0 %}
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for fila in matriz %}
+                            {% for celda in fila %}
+                                <tr>
+                                    {% if celda.columna == 0 %}
+                                        <input style='text-align: center; background-color: #5e5e5e; color: white' readonly type="text"
+                                               size="4" title="{{celda.descripcion}}" value="{{celda.valor}}">
+                                    {% else %}
+                                        <input style='text-align: center;' readonly type="text" size="4" value="{{celda.valor}}"
+                                               title="{{celda.descripcion}}">
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            <br>
+                        {% endfor %}
+                   </tbody>
+                  <br>
+                  <br>
+                  <div class="alert alert-info alert-dismissible">
+                     <br>
+                     <h4>Ronda #{{ ronda.numero_ronda }}.</h4>
+                      {% if ronda.estado is True %}
+                          <h4>Ronda abierta.</h4>
+                      {% else %}
+                          <h4>Ronda Cerrada.</h4>
+                      {% endif %}
+                      <h4>Expertos = {{ cant_expertos }}.</h4>
+                 </div>
+                  </table>
+            {% else %}
+                <h3>Ningún experto ha finalizado los juicios en esta ronda.</h3>
+                <br>
+                  <div class="alert alert-info alert-dismissible">
+                     <br>
+                     <h4>Ronda #{{ ronda.numero_ronda }}.</h4>
+                      {% if ronda.estado is True %}
+                          <h4>Ronda abierta.</h4>
+                      {% else %}
+                          <h4>Ronda Cerrada.</h4>
+                      {% endif %}
+                      <h4>Expertos = {{ cant_expertos }}.</h4>
+                 </div>
+            {% endif %}
+
+            <!------------PAGINACION--------->
+                        <ul class="pager">
+                                <li>
+                                    {% if page_obj.has_previous %}
+                                        <a href="?page={{page_obj.previous_page_number}}">Anterior</a>
+                                    {% endif %}
+                                </li>
+                                <li>
+                                    {% if page_obj.has_next %}
+                                        <a href="?page={{page_obj.next_page_number}}">Siguiente</a>
+                                    {% endif %}
+                                </li>
+                        </ul>
+            <!--BOTONES --------------------------------------------------->
+
+             <div class="form-group">
+                 <div class="col-md-offset-2 col-md-8">
+                     <a class="btn btn-success" href="{% url 'entrevista:rondas' estudio.id %}" title="Rondas"><i class="fa fa-arrow-left"></i> Rondas</a>
+                     <a class="btn btn-primary" data-toggle="modal" href="#modal_ayuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                     <a class="btn btn-primary" href="{% url 'entrevista:juicios' estudio.id %}" title="Juicio de expertos">Juicios <i class="fa fa-list"></i></a>
+                     <a class="btn btn-primary" href="{% url 'entrevista:coeficiente' ronda.id %}" title="Coeficiente Alpha de Cronbach">Coeficiente <i class="fa fa-flag"></i></a>
+                 </div>
+             </div>
+
+            <!--INICIO MODAL AYUDA--------------------------->
+
+		     <div id="modal_ayuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Matriz de juicios</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							  <p>
+                                  La matriz de juicios representa el conjunto de valoraciones realizadas por los expertos,
+                                  permite evidenciar de forma rápida la variación de los resultados para cada item evaluado.
+                                  Por otro lado, muestra las sumatorias en fila (valoraciones del experto) y columnas
+                                  (valoraciones por pregunta); asi como el promedio y desviación estandar que sustentan
+                                  el coeficiente Alfa de Cronbach obtenido.
+							  </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+{% endblock %}

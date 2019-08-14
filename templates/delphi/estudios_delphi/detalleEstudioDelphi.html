@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block titulo_principal %}
+    {% trans 'Delphi: ' %} {{ object.titulo }}
+{% endblock %}
+{% block titulo %}
+    <a class="brand">Delphi: {{ object.titulo }}</a>
+{% endblock %}
+<head>
+    {% block extra_css %}
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+    {% endblock %}
+</head>
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Detalle del estudio {{ estudiodelphi }}</h3>
+        {% if request.user == estudiodelphi.moderador %}
+            <a href="{% url 'delphi:crear_cuestionario' object.id %}">
+                <button class="pull-right btn btn-success "><i class="fa fa-plus"> Nuevo cuestionario</i></button>
+            </a>
+        {% endif %}
+    </div>
+    <div class="box-body">
+        {% if cuestionarios %}
+            <table id="example1" class="table table-bordered table-striped dataTable">
+                <tr>
+                    <th><b>#</b></th>
+                    <th style=text-align:center;"><b>Cuestionario</b></th>
+                    <th style="text-align:center;"><b>Estado</b></th>
+                    <th style="text-align:center;"><b>Fecna inicio</b></th>
+                    <th style="text-align:center;"><b>Fecha de cierre</b></th>
+                    <th style="text-align: center;"><b>Acciones</b></th>
+                </tr>
+                <tbody>
+                {% for cuestionario in cuestionarios %}
+                    <tr id="tr{{ cuestionario.id }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            {% if estudiodelphi.estado %}
+                                {% if rondas and cuestionario.estado is False %}
+                                    <a href="{% url 'delphi:rondas' cuestionario.id %}">{{ cuestionario.nombre }}</a>
+                                {% elif request.user == estudiodelphi.moderador and cuestionario.estado %}
+                                    <a href="{% url 'delphi:detalle_cuestionario' cuestionario.id %}">{{ cuestionario.nombre }}</a>
+                                {% elif request.user in estudiodelphi.coordinadores.all and sesiones %}
+                                    <a href="{% url 'delphi:detalle_cuestionario' cuestionario.id %}">{{ cuestionario.nombre }}</a>
+                                {% elif request.user in cuestionario.delphi.participantes.all and rondas %}
+                                    <a href="{% url 'delphi:responder_cuestionario' cuestionario.id %}">{{ cuestionario.nombre }}</a>
+                                                    {# <a data-toggle="modal" href="#modal_estado" title="Estado">{{ cuestionario.nombre }}</a>#}
+                                {% else %}
+                                    <a href="{% url 'delphi:ver_resultados' cuestionario.id %}">{{ cuestionario.nombre }}</a>
+                                {% endif %}
+                            {% else %}
+                                <h3 style="text-align: center">No hay Cuestionarios para este estudio</h3>
+                            {% endif %}
+                        </td>
+                        {% if cuestionario.estado %}
+                            <td style="text-align:center;">Abierto
+                                <small class="badge bg-green"><i class="fa fa-check"></i></small>
+                            </td>
+                        {% else %}
+                            <td style="text-align:center;">Cerrado
+                                <small class="badge bg-red"><i class=" fa fa-times"></i></small>
+                            </td>
+                        {% endif %}
+                        <td>
+                            {{ cuestionario.fecha_inicio }}
+                        </td>
+                        <td>
+                            {{ cuestionario.fecha_final }}
+                        </td>
+                        <td>
+                            {% if request.user == estudiodelphi.moderador %}
+                                <a class="label label-warning"
+                                   href="{% url 'delphi:editar_cuestionario' cuestionario.id %}"> <i
+                                        class="fa fa-pencil"></i></a>
+                                <a href="#modaleliminar" role="button" class="label label-danger" data-toggle="modal"
+                                   id="{{ delphi.id }}" data-name="{{ delphi.titulo }}"><i class=" fa fa-times"></i></a>
+                            {% else %}
+                                <a class="label label-info" href="{% url 'delphi:ver_resultados' cuestionario.id %}">
+                                    <i class="fa fa-book"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th><b>#</b></th>
+                    <th style=text-align:center;"><b>Cuestionario</b></th>
+                    <th style="text-align:center;"><b>Estado</b></th>
+                    <th style="text-align: center;"><b>Fecha inicio</b></th>
+                    <th style="text-align: center;"><b>Fecha cierre</b></th>
+                    <th style="text-align: center;"><b>Acciones</b></th>
+                </tr>
+                </tfoot>
+            </table>
+        {% else %}
+            <h3 style="text-align: center">No hay Cuestionarios para este estudio</h3>
+        {% endif %}
+    </div>
+    <div class="box-footer">
+        <div class="form-group">
+            <a class="btn btn-primary" href="{% url 'delphi:estudios_delphi' %}"><i
+                    class="fa fa-arrow-left"></i> Atrás</a>
+            <a class="btn btn-info" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i
+                    class="fa fa-book"></i> Ayuda</a>
+
+        </div>
+    </div>
+
+    <!--MODAL ESTADO--------------------------->
+
+    <div id="modal_estado" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <h4 class="modal-title">Peticion denegada</h4>
+                </div>
+                <div class="modal-body" style="text-align: justify">
+                    <p>
+                        El cuestionario se encuentra cerrado, por lo tanto no puede acceder.
+                    </p>
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block extra_js %}
+
+        <script src="{% static '/js/delphi/dataTable/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static '/js/delphi/dataTable/dataTables.bootstrap.min.js' %}"></script>
+        <!-- page script -->
+        <script>
+            $(function () {
+                $('#example1').DataTable();
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

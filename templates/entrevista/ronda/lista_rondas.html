@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+    {% include 'entrevista/messages.html' %}
+
+    {% if usuario != '' %}
+        <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Rondas</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                {% if rondas %}
+               <input type="text" class="form-control" style="width: 400px" id="myInput" onkeyup="filtrarTable()" placeholder="Buscar ronda por número.">
+               <br>
+
+              <table id="tabla_rondas" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th style="text-align: center">Número</th>
+                  <th style="text-align: center">Inicio</th>
+                  <th style="text-align: center">Cierre</th>
+                  <th style="text-align: center">Estado</th>
+                  <th id="acciones" style="text-align: center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for ronda in rondas %}
+                        <tr>
+                            <td style="text-align: center">{{ronda.numero_ronda}}</td>
+                            <td style="text-align: center">{{ronda.fecha_inicio}}</td>
+                            <td style="text-align: center">{{ronda.fecha_final}}</td>
+                            <td style="text-align: center">
+                                {% if ronda.estado is True %}
+                                    <a class="btn btn-sm btn-success" title="Ronda abierta"><i class="fa fa-check"></i></a>
+                                {% else %}
+                                    <a class="btn btn-sm btn-danger" title="Ronda cerrada"><i class="fa fa-times"></i></a>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center; width: 20%">
+                                <a class="btn btn-primary" title="Ver" href="{% url 'entrevista:consultar_ronda' ronda.id %}"><i class="fa fa-eye"></i></a>
+                                {% if usuario == 'COORDINADOR' %}
+                                    {% if estudio.estado is True %}
+                                        {% if ronda.fecha_final >= hoy %}
+                                            <a class="btn btn-warning .edit" title="Editar" href="{% url 'entrevista:editar_ronda' ronda.id %}"><i class="fa fa-pencil"></i></a>
+                                        {% else %}
+                                            <a class="btn btn-warning .edit" title="La ronda no se puede editar si ha transcurrido su periodo de desarrollo." disabled="True"><i class="fa fa-pencil"></i></a>
+                                        {% endif %}
+                                    {% endif %}
+                                    <a class="btn btn-success" title="Matriz de juicios" href="{% url 'entrevista:matriz_juicios' ronda.id %}"><i class="fa fa-table"></i></a>
+                                    <a class="btn btn-success" title="Coeficiente Alfa de Cronbach" href="{% url 'entrevista:coeficiente' ronda.id %}"><i class="fa fa-flag"></i></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <h3>No se han registrado rondas en el estudio.</h3>
+                {% endif %}
+               </tbody>
+              </table>
+
+            <!------------PAGINACION--------->
+                        <ul class="pager">
+                                <li>
+                                    {% if page_obj.has_previous %}
+                                        <a href="?page={{page_obj.previous_page_number}}">Anterior</a>
+                                    {% endif %}
+                                </li>
+                                <li>
+                                    {% if page_obj.has_next %}
+                                        <a href="?page={{page_obj.next_page_number}}">Siguiente</a>
+                                    {% endif %}
+                                </li>
+                        </ul>
+            <!--BOTONES --------------------------------------------------->
+
+             <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        <a class="btn btn-success" href="{%url 'entrevista:escala' estudio.id %}" title="Escala de Likert"><i class="fa fa-arrow-left"></i> Escala</a>
+                        <a class="btn btn-primary" href="{%url 'entrevista:lista_estudios' %}" title="Lista de estudios"><i class="fa fa-list"></i> Estudios</a>
+                        {% if usuario == 'COORDINADOR' and estudio.estado is True %}
+                            {% if rondas_activas == 0 %}
+                                <a class="btn btn-primary"  href="{% url 'entrevista:nueva_ronda' estudio.id %}" title="Agregar ronda"><i class="fa fa-plus"></i> Agregar</a>
+                            {% elif rondas_activas > 0 %}
+                                <a class="btn btn-primary" disabled="True" title="Existe una ronda en desarrollo."><i class="fa fa-plus"></i> Agregar</a>
+                            {% endif %}
+                        {% elif estudio.estado is False %}
+                            <a class="btn btn-primary" disabled="True" title="El estudio ha finalizado o está deshabilitado."><i class="fa fa-plus"></i> Agregar</a>
+                        {% endif %}
+                        <a class="btn btn-primary" data-toggle="modal" href="#modal_ayuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                        <a class="btn btn-primary" href="{% url 'entrevista:juicios' estudio.id %}" title="Juicio de expertos"><i class="fa fa-list"></i> Juicios</a>
+                        {% if usuario == 'COORDINADOR' %}
+                        <a class="btn btn-primary" href="{% url 'entrevista:historial_coeficientes' estudio.id %}" title="Historial Coeficiente Alfa de Cronbach"><i class="fa fa-list"></i> Coeficientes</a>
+                        {% endif %}
+                    </div>
+             </div>
+
+            <!--INICIO MODAL AYUDA--------------------------->
+
+		<div id="modal_ayuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Ayuda - Rondas</h4>
+                    </div>
+                    <div class="modal-body" style="text-align: justify">
+                        <p>
+                            Al ser el objetivo del  estudio el diseño del cuestionario de la entrevista a realizar, las
+                            rondas permiten llevar a cabo el proceso de depuración y mejoramiento de los ítems o preguntas
+                            que lo conforman a medida que los expertos realizan los juicios que consideran pertinentes.
+                            Es decir, si al finalizar una ronda los resultados alcanzados evidencian la necesidad de realizar
+                            cambios al conjunto de preguntas, el coordinador una vez los ha desarrollado puede registrar
+                            una nueva ronda para que los expertos evalúen los cambios.
+                        </p>
+                        {% if usuario == 'COORDINADOR' %}
+                            <p>Nota: Tenga en cuenta que mientras exista una ronda abierta no será posible agregar, editar o eliminar
+                                preguntas al estudio, de igual manera los accesos para agregar o editar las opciones que conforman la
+                                escala de Likert se visualizarán deshabilitadas. Además las opciones de respuesta de la escala solo
+                                podrán ser eliminadas mientras no exista una ronda abierta y el número de rondas registradas sea menor
+                                a 2, es decir finalizada la ronda inicial se debe llevar a cabo la eliminación de aquellas alternativas
+                                que se consideren inadecuadas o innecesarias de acuerdo al análisis de los resultados obtenidos.</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/entrevista/filtrar_dataTable.js' %}"></script>
+{% endblock %}
+

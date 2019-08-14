@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    {% if usuario != '' %}
+        <div class="box";>
+            <div class="box-header with-border">
+                <h2 class="box-title">Detalle de la ronda N° <b> {{ ronda.numero_ronda }}</b></h2>
+            </div>
+            <form class="form-group" role="form" method="post">{% csrf_token %}
+                <div class="box-body border-right ">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label class="control-label">Número</label>
+                                <input class="form-control" readonly value="{{ ronda.numero_ronda }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label class="control-label">Inicio</label>
+                                <input class="form-control" readonly value="{{ ronda.fecha_inicio }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label class="control-label" style="text-align: left">Cierre</label>
+                                <input class="form-control" readonly value="{{ ronda.fecha_final }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 ">
+                                <div class="form-group">
+                                    <label class="control-label" style="text-align: left">Estado</label>
+                                    {% if ronda.abierto is True %}
+                                        <input class="form-control" readonly value=" Abierta">
+                                    {% else %}
+                                        <input class="form-control" readonly value="Cerrada">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="box-footer">
+                    <div class="col-md-8">
+                        <a class="btn btn-success"
+                           href="{% url 'delphi:Detalle_estudio' ronda.delphi.id %}" title="Rondas"><i
+                                class="fa fa-check"></i> Ok</a>
+                    </div>
+            </div>
+        </div>
+    {% else %}
+        <img src="{% static 'img/acceso_denegado.png' %}">
+        <h2>Upps...no cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+    <script>
+        //Date picker
+        $('#datepicker').datepicker({
+            autoclose: true
+        })
+    </script>
+
+{% endblock %}
+
+

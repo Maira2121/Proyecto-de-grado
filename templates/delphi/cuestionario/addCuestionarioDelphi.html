@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block extra_css %}
+    <!-- DataPicker -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+<form class="" role="form" method="post">{% csrf_token %}
+    {% if request.user == delphi.moderador %}
+        {% if cant_cuestionarios_activos == 0  %}
+            {% if cant_rondas_activas == 0 %}
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="control-label">Nombre</label>
+                                {{ form.nombre }}
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Abierto</label>
+                                {{ form.estado }}
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="control-label">Estudio</label>
+                                <input class="form-control" name="delphi" value="{{ delphi }}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha inicio</label>
+                            {{ form.fecha_inicio }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label">Fecha fin</label>
+                            {{ form.fecha_final }}
+                        </div>
+
+                    </div>
+                </div>
+                <div class="box-footer ">
+                    <div class="form-group">
+                        <a href="{% url 'delphi:estudios_delphi' %}">
+                            <button type="button" class="btn btn-warning"><i class="fa fa-remove"></i> Cancelar</button>
+                        </a>
+                        <button type="submit" class="btn btn-success "><i class="fa fa-save"></i> Guardar</button>
+                    </div>
+                </div>
+            {% else %}
+                <h3>No puede crear otra sesión de ceustionario mientras exista una ronda en curso.</h3>
+                <div class="box-footer ">
+                    <div class="form-group">
+                        <div class="col-md-8 col-md-offset-3">
+                            <a class="btn btn-success"
+                               href="{% url 'delphi:Detalle_estudio' delphi.id %}" title="Rondas"><i
+                                    class="fa fa-check-circle"></i> Aceptar</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <h3>No puede crear otro cuestionario mientras exista uno anterior abierto.</h3>
+            <div class="box-footer ">
+                <div class="form-group">
+                    <div class="col-md-8 col-md-offset-3">
+                        <a class="btn btn-success"
+                           href="{% url 'delphi:Detalle_estudio' delphi.id %}" title="Rondas"><i
+                                class="fa fa-check-circle"></i> Aceptar</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <h2>Usted no cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+</form>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/controlFechas.js' %}"></script>
+
+{% endblock %}

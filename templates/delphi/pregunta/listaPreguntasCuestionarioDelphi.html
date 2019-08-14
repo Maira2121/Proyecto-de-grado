@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+{% endblock %}
+{% block titulo %}
+{% endblock %}
+{% block content_title %}
+    <a class="brand" xmlns="">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    <div class="box-header">
+        {% if request.user in sesioncuestionario.cuestionario.delphi.participantes.all %}
+            <div class="alert bg-olive alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <h4><i class="icon fa fa-info"></i> Hola {{ request.user }}!</h4>
+                Usted ha sido seleccionado para participar en el
+                estudio: {{ sesioncuestionario.cuestionario.delphi.titulo }},
+                en el siguiente link podrá responder el cuestionario: <a
+                    href="{% url 'delphi:responder_cuestionario' sesion.cuestionario.id %}">
+                <label style="color: #bcddff">Responder cuestionario</label></a>
+            </div>
+        {% elif request.user in sesioncuestionario.cuestionario.delphi.coordinadores.all %}
+            <div class="alert bg-olive alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <h4><i class="icon fa fa-info"></i> Hola {{ request.user }}!</h4>
+                Usted ha sido seleccionado para participar como coordinador en el
+                estudio: {{ sesioncuestionario.cuestionario.delphi.titulo }},
+                Usted podrá agregar preguntas y votar por las que considere adecuadas.
+            </div>
+            <div class="">
+                <a href="{% url 'delphi:nueva_pregunta' sesioncuestionario.id %}">
+                    <button class="pull-right btn btn-success"><i class="fa fa-plus">Agregar pregunta</i></button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    {% if request.user in sesioncuestionario.cuestionario.delphi.coordinadores.all and sesioncuestionario.estado %}
+        <div class="box-body">
+        <div class="callout bg-blue-gradient">
+            <h4><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">¡Preguntas!</font></font>
+            </h4><font style="vertical-align: inherit;"></font>
+        </div>
+        <table id="example1" class="table table-bordered table-striped dataTable">
+            <thead>
+            <tr>
+                <th width="5%">#</th>
+                <th width="50%"><b>Preguntas </b></th>
+                <th width="10%"><b>Tipo</b></th>
+                {% if request.user in sesioncuestionario.cuestionario.delphi.coordinadores.all %}
+                    <th width="15%" height="100%"><b>Opciones</b></th>
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% if object %}
+                {% for pregunta in preguntas %}
+                    <tr id="tr{{ pregunta.id }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{% url 'delphi:detalle_pregunta' pregunta.id %}">{{ pregunta.enunciado_pregunta }} </a>
+                        </td>
+                        <td>{{ pregunta.tipo_pregunta }}</td>
+                        {% if request.user in sesioncuestionario.cuestionario.delphi.coordinadores.all %}
+                            <td>
+                                {% include 'delphi/pregunta/acciones.html' %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <h1>No se han creado preguntas para esta sesión</h1>
+            {% endif %}
+            </tbody>
+        </table>
+        {#----------- segunda tala-------------- #}
+        <div class="callout bg-blue-active">
+            <h4><font style="vertical-align: inherit;">¡Mis preguntas!</font></h4>
+        </div>
+        <table id="example2" class="table table-bordered table-striped dataTable">
+            <thead>
+            <tr>
+                <th width="5%">#</th>
+                <th width="60%"><b>Preguntas </b></th>
+                <th width="20%"><b>Tipo</b></th>
+                <th width="15%" height="100%"><b>Opciones</b></th>
+            </tr>
+            </thead>
+            <tbody>
+                {% if object %}
+                    {% for pregunta in mis_preguntas %}
+                        <tr id="tr{{ pregunta.id }}">
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <a href="{% url 'delphi:detalle_pregunta' pregunta.id %}">{{ pregunta.enunciado_pregunta }} </a>
+                            </td>
+                            <td>{{ pregunta.tipo_pregunta }}</td>
+                            {% if pregunta.sesioncuestionario.estado  or pregunta.sesioncuestionario.fecha_final >= hoy %}
+                                <td>
+                                    <a class="btn btn-xs btn-warning"
+                                       href="{% url 'delphi:editar_pregunta' pregunta.id %}"><span
+                                            class="fa fa-pencil"></span></a>
+                                    <a class="btn btn-xs btn-danger"
+                                       href="{% url 'delphi:eliminar_pregunta' pregunta.id %}"><span
+                                            class="fa fa-trash-o"></span></a>
+                                    <a onclick="return modals('{% url 'delphi:estadisticas' pregunta.id %}','Estadisticas / {{ pregunta.votos_positivos.count }}')"
+                                       class="btn btn-xs bg-purple">
+                                        <span class="fa fa-line-chart"></span>
+                                    </a>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a class="btn btn-xs btn-warning" disabled="True"
+                                       href="{% url 'delphi:editar_pregunta' pregunta.id %}"><span
+                                            class="fa fa-pencil"></span></a>
+                                    <a class="btn btn-xs btn-danger" disabled="True"><span
+                                            class="fa fa-trash-o"></span></a>
+                                    <a onclick="return modals('{% url 'delphi:estadisticas' pregunta.id %}','Estadisticas / {{ pregunta.votos_positivos.count }}')"
+                                       class="btn btn-xs bg-purple">
+                                        <span class="fa fa-line-chart"></span>
+                                    </a>
+                                </td>
+                            {% endif %}
+
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <h1>No se han creado preguntas para esta sesión</h1>
+                {% endif %}
+            </tbody>
+        </table>
+        {% elif sesioncuestionario.cuestionario.estado is False %}
+        <a href="{% url 'delphi:ver_resultados' sesion.cuestionario.id %}">
+            <button class="btn btn-success"><i class="fa fa-plus">Generar cuestionario</i></button>
+        </a>
+    {% endif %}
+
+{% if request.user ==  sesion.cuestionario.delphi.moderador and sesion.cuestionario.estado == False %}
+    <div class="pull-right">
+        <a href="{% url 'delphi:cuestionario' sesion.cuestionario.id %}">
+            <button class="btn btn-success"><i class="fa fa-plus">Generar cuestionario</i></button>
+        </a>
+        {% if rondas_activas > 0 %}
+            <a href="{% url 'delphi:rondas' sesion.cuestionario.id %}">
+                <button class="btn btn-primary"><i class="fa fa-eye"> Ver rondas</i></button>
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+</div>
+    <div class="box-footer">
+        <div class="form-group">
+            <a class="btn btn-success"
+               href="{% url 'delphi:detalle_cuestionario' sesioncuestionario.cuestionario.id %}"><i
+                    class="fa fa-arrow-left"></i> Atrás</a>
+            <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i
+                    class="fa fa-book"></i> Ayuda</a>
+        </div>
+    </div>
+    <!--MODAL AYUDA--------------------------->
+    <div id="modal-preguntas">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="popup"></div>
+
+    <!-- MODAL DETALLE DE LA PREGUNTA -->
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/delphi/jquery.js' %}"></script>
+    <script src="{% static 'js/delphi/jquery-ui.js' %}"></script>
+    <script src="{% static '/js/delphi/dataTable/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static '/js/delphi/dataTable/dataTables.bootstrap.min.js' %}"></script>
+
+    <!-- page script -->
+    <script>
+        var modal;
+
+        function modals(url, titulo) {
+            modal = $('#popup').dialog(
+                {
+                    title: titulo,
+                    modal: true,
+                    width: 800,
+                    resizable: false
+                }).dialog('open').load(url)
+
+            function cerrar_modal() {
+                modal.dialog("close");
+            }
+        }
+    </script>
+    <script>
+
+        function abrir_modal(url) {
+            $('#modal-preguntas').load(url, function () {
+                $(this).modal('show');
+            });
+            return false;
+        }
+
+        function cerrar_modal() {
+            $('#modal-preguntas').modal('hide');
+            return false;
+        }
+
+        $(function () {
+            $('#example1').DataTable();
+            $('#example2').DataTable();
+        });
+    </script>
+    <script>
+        function votar(url) {
+            $('#votos_positivos').load(url, function (data) {
+                    $('#votos_positivos').load(' #votos_positivos');
+                }
+            );
+            return false;
+        }
+    </script>
+
+{% endblock %}

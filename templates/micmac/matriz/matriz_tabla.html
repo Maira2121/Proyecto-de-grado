@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+   <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+{% endblock %}
+{% block titulo_principal %}
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Micmac: {{ estudio.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    {% if object_list %}
+    <table class="table table-bordered table-striped dataTable" role="grid">
+        <thead>
+            <tr>
+                <td><strong>Variable</strong></td>
+                <td><strong>Influencia Total</strong></td>
+                <td><strong>Dependencia Total</strong></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for variable in object_list %}
+            <tr>
+                <td>{{ variable.nombre }}</td>
+                <td>{{ variable.total_influencia }}</td>
+                <td>{{ variable.total_dependencia }}</td>
+            </tr>
+            {% endfor%}
+        </tbody>
+    </table>
+    {% else %}
+    <h1 class="text-center">NO HAY REGISTROS DE VARIABLES</h1>
+    {% endif %}
+{% endblock %}

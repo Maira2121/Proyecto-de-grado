@@ -1,0 +1,19 @@
+{% for usuario in usuarios %}
+    {% if usuario in cuestionariodelphi.delphi.participantes.all %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ usuario }}</td>
+
+            <td>
+                <button class="btn btn-danger btn-xs show-form-delete"
+                        data-url="#">
+                    <span class="fa fa-trash"></span>
+                </button>
+            </td>
+        </tr>
+    {% endif %}
+{% empty %}
+    <tr>
+        <td colspan="7" class="text-center bg-warning">No hay participantes</td>
+    </tr>
+{% endfor %}

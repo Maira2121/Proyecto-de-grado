@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+<section class="content-header">
+    <h1> {% block title %}Nuevo estudio Delphi{% endblock %}
+        <small>{% block title_foot %}{% endblock %}</small>
+    </h1>
+</section>
+{% block extra_css %}
+    <!-- DataPicker -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+{% endblock %}
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    <form class="" role="form" method="post">{% csrf_token %}
+        {% if request.user.is_superuser %}
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group col-md-10">
+                        <label class="control-label">Proyecto</label>
+                        {{ form.proyecto }}
+                        <label class="control-label">Titulo</label>
+                        {{ form.titulo }}
+                        <label class="control-label">Descripcion</label>
+                        {{ form.descripcion }}
+                        <label class="control-label">Objetivos</label>
+                        {{ form.objetivos }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-8">
+                        <label class="control-label">Coordinadores</label>
+                        {{ form.coordinadores }}
+                    </div>
+                    <!-- /.form-group -->
+                    <div class="col-md-2">
+                        <button class="pull-left-container btn btn-primary show-form"
+                                data-url="{% url 'delphi:agregar_participante' %}">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Agregar Usuario
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-8">
+                        <label class="control-label">Participantes</label>
+                        {{ form.participantes }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">Fecha inicio</label>
+                        {{ form.fecha_inicio }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Fecha fin</label>
+                        {{ form.fecha_final }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Abierto</label>
+                        {{ form.estado }}
+                    </div>
+                    <input class="form-control hidden" type="text" value="{{ user.id }}" name="moderador">
+                </div>
+            </div>
+            <div class="box-footer ">
+                <div class="form-group">
+                    <a href="{% url 'delphi:estudios_delphi' %}">
+                        <button type="button" class="btn btn-warning"><i class="fa fa-remove"></i> Cancelar</button>
+                    </a>
+                    <button type="submit" class="btn btn-success "><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </div>
+        {% else %}
+            <h2>Usted no cuenta con permisos para acceder a esta página.</h2>
+        {% endif %}
+    <div class="modal fade" id="modal-participantes">
+        <div class="modal-dialog">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+    </form>
+{% endblock %}
+{% block extra_js %}
+
+    <!-- Datapicker -->
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/controlFechas.js' %}"></script>
+    <script src="{% static 'js/select2.full.min.js' %}"></script>
+    <script src="{% static '/js/delphi/participantes.js' %}"></script>
+    <script>
+        $('.select2').select2();
+
+    </script>
+{% endblock %}

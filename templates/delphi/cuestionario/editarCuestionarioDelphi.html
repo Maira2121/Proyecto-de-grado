@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+    <!-- DataPicker -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+{% endblock %}
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    <form class="" role="form" method="post">{% csrf_token %}
+         {% if cuestionariodelphi.delphi.estado is True and cuestionariodelphi.estado is True and request.user == cuestionariodelphi.delphi.moderador %}
+            <div class="box-body">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="form-group">
+                        <label class="control-label">Nombre</label>
+                        {{ form.nombre }}
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Abierto</label>
+                        {{ form.estado }}
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="control-label">Fecha inicio</label>
+                    {{ form.fecha_inicio }}
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label">Fecha fin</label>
+                    {{ form.fecha_final }}
+                </div>
+
+            </div>
+            </div>
+
+            <div class="box-footer ">
+                <div class="form-group">
+                    <a href="{% url 'delphi:Detalle_estudio' cuestionariodelphi.delphi.id %}">
+                        <button type="button" class="btn btn-warning"><i class="fa fa-remove"></i> Cancelar</button>
+                    </a>
+                    <button type="submit" class="btn btn-success "><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </div>
+
+        {% else %}
+            <h2>No se puede editar este cuestionario debidoa a que el estusdio o el cuestionario estan cerrados.</h2>
+        {% endif %}
+    </form>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/controlFechas.js' %}"></script>
+
+{% endblock %}

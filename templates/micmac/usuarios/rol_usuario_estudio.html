@@ -1,0 +1,16 @@
+
+    {% if request.user == micmac.moderador and request.user in micmac.coordinadores.all and request.user in micmac.expertos.all %}
+        <small class="badge bg-aqua-gradient">Moderador - Coordinador - Participante</small>
+    {% elif request.user == micmac.moderador and request.user in micmac.coordinadores.all %}
+    <small class="badge bg-light-blue">Moderador - Coordinador</small>
+    {% elif request.user == micamc.moderador and request.user in micmac.expertos.all %}
+        <span class="badge label-success"> Moderador - Participante</span>
+    {% elif request.user == micmac.moderador %}
+        <span class=" badge bg-green-light"> Moderador</span>
+    {% elif request.user in micmac.coordinadores.all and request.user in micmac.expertos.all %}
+        <small class="badge bg-gray">Coordinador - Participante</small>
+    {% elif request.user in micmac.coordinadores.all %}
+        <span class=" badge bg-blue">Coordinador</span>
+    {%else%}
+        <span class="badge bg-aqua-active">Participante</span>
+    {% endif %}

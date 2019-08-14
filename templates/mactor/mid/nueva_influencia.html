@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if estudio.estado is True and usuario != '' and usuario != 'COORDINADOR' %}
+            <div class="matter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="widget-head">
+                                <div class="box-header with-border">
+                                  <h3 class="box-title">Nueva relación de influencia directa </h3>
+                                  <h3>{{ porcentaje }}% diligenciado.</h3>
+                                    <input hidden class="col-sm-1" type="number" name="idEstudio" value="{{estudio.id}}">
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="padd">
+										<hr/>
+										<!-- Form starts.  -->
+                                {% include 'mactor/../../messages.html' %}
+
+                                {% if porcentaje < 100 %}
+                                    {% if actores %}
+                                        <form id="form_mid" class="form-horizontal" role="form" method="post">
+                                            {% csrf_token %}
+
+                                            <div class="row">
+                                                <div class="col-md-8 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        {{form.idActorY.erros}}
+                                                        <label class="control-label" style="text-align: left">Influencia del actor*</label>
+                                                        <select name="idActorY" class="form-control" required id="id_idActorY">
+                                                            <option value="" selected>----Seleccionar----</option>
+                                                            {% for actor in actores %}
+                                                                {% if actor.id in registrados_y %}
+                                                                    <option value="{{actor.id}}">(Registrado) {{actor.nombreLargo|upper}}</option>
+                                                                {% else %}
+                                                                    <option value="{{actor.id}}">{{actor.nombreLargo|upper}}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--DIV DESCRIPCION DEL ACTOR Y-->
+                                            <div class="row">
+                                                <div class="col-md-7 col-md-offset-1">
+                                                    <div id="info"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-8 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        {{form.idActorX.errors}}
+                                                        <label class="control-label" style="text-align: left">Sobre el actor*</label>
+                                                        <select name="idActorX" class="form-control" required id="id_idActorX">
+                                                            <option value="" selected>----Seleccionar----</option>
+                                                            {% for actor in actores %}
+                                                                <option value="{{actor.id}}">{{actor.nombreLargo|upper}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        {{form.valor|as_crispy_field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--DIV DESCRIPCION DEL ACTOR X-->
+                                            <div class="row">
+                                                <div class="col-md-7 col-md-offset-1">
+                                                    <div id="info2"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-8 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        <label class="control-label" style="text-align: left">Justificación*</label>
+                                                        <textarea class="form-control" rows="3" name="justificacion"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div  class="row">
+                                                <div class="col-md-3 col-md-offset-1" hidden>
+                                                    <div class="form-group">
+                                                        <label class="control-label" style="text-align: left">Experto</label>
+                                                        <input class="form-control" type="text" value="{{user.id}}" name="idExperto">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                             <div class="form-group">
+                                                <div class="col-md-8 col-md-offset-3">
+                                                    <a class="btn btn-success" href="{% url 'mactor:influenciasMID' estudio.id %}" title="Influencias directas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                                    <button type="submit" class="btn btn-primary" title="Guardar"><i class="fa fa-save"></i> Guardar</button>
+                                                    {% if actores %}
+                                                    <a class="btn btn-primary" data-toggle="modal" href="#modalFicha" onclick="Consultar_ficha()" title="Consultar estrategias"><i class="fa fa-eye"></i> Consultar</a>
+                                                    {% endif %}
+                                                    <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    {% else %}
+                                        <h3>No se han registrado actores en el estudio.</h3>
+                                        <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-3">
+                                                <a class="btn btn-success" href="{% url 'mactor:influenciasMID' estudio.id %}" title="Influencias directas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                                <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-info alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                        <h4><i class="icon fa fa-info"></i></h4>
+                                        <h3>Ha finalizado la Matriz de Influencias Directas.
+                                        <br>
+                                        Gracias por participar.
+                                        </h3>
+                                            <br>
+                                        <h4>Puede editar las influencias registradas, mientras el estudio se encuentre abierto.</h4>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-8 col-md-offset-3">
+                                            <a class="btn btn-success" href="{% url 'mactor:influenciasMID' estudio.id %}" title="Influencias directas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                            <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+  <!--INICIO MODAL FICHA ACTOR------------------->
+    <div id="modalFicha" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 id="mod_title" class="modal-title">Ficha de estrategias</h4>
+                </div>
+                <div id="mod_body" class="modal-body" style="text-align: justify"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <!--INICIO MODAL AYUDA--------------------------->
+
+    <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Nueva ficha de estrategias</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							  <p>Registre las influencias directas
+										entre los actores, a partir de la tabla de estrategias elaborada anteriormente.
+										Se definen cinco niveles de relaciones entre los actores según el grado de influencia
+										así: un actor tiene poca o ninguna influencia sobre otro (0), un actor puede poner
+										en riesgo de forma limitada los procesos operativos de gestión de otro (1), un actor
+										puede poner en riesgo el éxito de los proyectos de otro actor (2), un actor puede
+										poner en riesgo el cumplimiento de las misiones de otro actor (3) y por último un
+										actor puede poner en riesgo la existencia o permanencia de otro (4) (Godet y Durance,
+										2009).
+                              </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+
+            </div>
+</div>
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/mactor/consultar_actor.js' %}"></script>
+    <script src="{% static 'js/mactor/control_opciones_form_ficha_mid.js' %}"></script>
+    <script src="{% static 'js/mactor/consultar_ficha_mid.js' %}"></script>
+    <script type="text/javascript">
+	    document.getElementById("id_idActorX").disabled = true;
+    </script>
+{% endblock %}
+
+

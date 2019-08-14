@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+{% endblock %}
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand" xmlns="">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+<form class="" role="form"  method="post" action="{% url 'delphi:editar_pregunta' pregunta.id %}"> {% csrf_token %}
+    {% if request.user == autor1 %}
+    <div class="box-header">
+        <h3 class="box-title">Editar pregunta:</h3>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="form-group col-md-12">
+                <div class="form-group col-md-8">
+                    <label class="control-label">Enunciado de la pregunta:</label>
+                    {{ form.enunciado_pregunta }}
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="control-label"> Tipo pregunta:</label>
+                    {{ form.tipo_pregunta }}
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="control-label"> De control:</label>
+                    {{ form.de_control }}
+                </div>
+                <div class="form-group col-md-2 hidden">
+                    <label class="control-label"> Autor:</label>
+                    {{ form.autor }}
+                </div>
+                <div class="form-group col-md-2">
+                    <a class="btn btn-xs btn-primary" href="{% url 'delphi:listaOpciones' pregunta.id %}" id="opciones"><i class="fa fa-thumbs-o-up">Ver opcioes</i></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="box-footer">
+        <div class="form-group">
+            <a class="btn btn-primary" href="{% url 'delphi:preguntas' pregunta.cuestionario_id %}"><i
+                    class="fa fa-arrow-left"></i> Atrás
+            </a>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i>
+                Guardar
+            </button>
+            <a class="btn btn-info" data-toggle="modal" href="#modalAyuda" title="Ayuda">
+                <i class="fa fa-book"></i> Ayuda</a>
+        </div>
+    </div>
+
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% else %}
+    <h1> usted no es el creador de esta pregunta, por lo rtanto no puede editarla</h1>
+    {% endif %}
+</form>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static '/js/delphi/dataTable/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static '/js/delphi/dataTable/dataTables.bootstrap.min.js' %}"></script>
+
+    <script>
+        $(function () {
+            $('#tb-opciones').DataTable()
+        })
+    </script>
+{% endblock %}

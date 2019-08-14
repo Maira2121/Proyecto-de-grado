@@ -1,0 +1,31 @@
+{% load staticfiles %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/response.min.css' %}">
+{% endblock %}
+{% if opcion.pregunta.id == pregunta.id %}
+    {% if pregunta.tipo_pregunta  == "multi" %}
+        <ul>
+            <input type="checkbox" value="{{ opcion }}">
+            <span for="{{ opcion }}">{{ opcion }}</span>
+        </ul>
+
+    {% elif pregunta.tipo_pregunta == "escala" %}
+        <ul>
+            <input type="radio" name= "opcion" value="{{ opcion }}" id="{{ opcion }}">
+            <span for="{{ opcion }}">{{ opcion }}</span>
+        </ul>
+    {% endif %}
+{% endif %}
+
+{% block extra_js %}
+    <script src="{% static 'js/delphi/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/delphi/jquery-1.12.4.js' %}"></script>
+    <script>
+        $(function () {
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+        });
+    </script>
+{% endblock %}

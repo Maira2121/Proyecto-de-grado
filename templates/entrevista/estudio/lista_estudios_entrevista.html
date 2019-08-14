@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+    {% include 'entrevista/messages.html' %}
+
+<div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Estudios Entrevista</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                {% if estudios %}
+                <input type="text" class="form-control" style="width: 400px" id="myInput" onkeyup="filtrarTable()" placeholder="Buscar estudio por título.">
+                <br>
+
+              <table id="tabla_estudios" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th style="text-align: center">#</th>
+                  <th style="text-align: center">Título</th>
+                  <th style="text-align: center">Inicio</th>
+                  <th style="text-align: center">Cierre</th>
+                  <th style="text-align: center">Estado</th>
+                  <th style="text-align: center">Rol</th>
+                  <th style="text-align: center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for estudio in estudios %}
+                        <tr>
+                            <td style="text-align: center">{{forloop.counter}}</td>
+                            <td >
+                                {% if request.user == estudio.idAdministrador or request.user == estudio.idCoordinador %}
+                                    <a href="{% url 'entrevista:preguntas' estudio.id %}" style="color: #0a6aa1 ">{{estudio.titulo}}</a>
+                                {% else %}
+                                    <a href="{% url 'entrevista:rondas' estudio.id %}" style="color: #0a6aa1 ">{{estudio.titulo}}</a>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center">{{estudio.fecha_inicio}}</td>
+                            <td style="text-align: center">{{estudio.fecha_final}}</td>
+                            <td style="text-align: center">
+                                {%if estudio.estado is True %}
+                                    <a class="btn btn-sm btn-success" title="Abierto"><i class="fa fa-check"></i></a>
+                                {%else%}
+                                    <a class="btn btn-sm btn-danger" title="Cerrado"><i class="fa fa-times"></i></a>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center">
+                                {% if request.user == estudio.idAdministrador and request.user == estudio.idCoordinador  %}
+                                    <a class="btn btn-sm btn-success" style="width: 65%">Administrador - Coordinador</a>
+                                {% elif request.user == estudio.idAdministrador %}
+                                    <a class="btn btn-sm btn-success" style="width: 65%">Administrador</a>
+                                {% elif request.user == estudio.idCoordinador %}
+                                    <a class="btn btn-sm btn-warning" style="width: 65%">Coordinador</a>
+                                {%else%}
+                                    <a class="btn btn-sm btn-default" style="width: 65%">Experto</a>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center">
+                                <a class="btn btn-primary" title="Ver" href="{% url 'entrevista:consultar_estudio' estudio.id %}"><i class="fa fa-eye"></i>
+                                </a>
+                                {% if request.user == estudio.idAdministrador and estudio.fecha_final >= hoy %}
+                                    <a class="btn btn-warning" title="Editar" href="{% url 'entrevista:editar_estudio' estudio.id %}"> <i class="fa fa-pencil"></i></a>
+                                 {% elif request.user == estudio.idAdministrador %}
+                                    <a class="btn btn-warning" title="El estudio ha finalizado." disabled="True"> <i class="fa fa-pencil"></i></a>
+                                {% endif %}
+                                <a class="btn btn-primary" title="Exportar" href="{% url 'entrevista:estudio_xls' estudio.id %}" ><i class="fa fa-download"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <h3>Actualmente no cuenta con estudios entrevista registrados.</h3>
+                {% endif %}
+                </tfoot>
+              </table>
+
+            <!------------PAGINACION--------->
+                        <ul class="pager">
+                                <li>
+                                    {% if page_obj.has_previous %}
+                                        <a href="?page={{page_obj.previous_page_number}}">Anterior</a>
+                                    {% endif %}
+                                </li>
+                                <li>
+                                    {% if page_obj.has_next %}
+                                        <a href="?page={{page_obj.next_page_number}}">Siguiente</a>
+                                    {% endif %}
+                                </li>
+                        </ul>
+            <!--BOTONES --------------------->
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-8">
+                    {% if request.user.is_superuser %}
+                    <a class="btn btn-primary" id="boton_agregar" href="{% url 'entrevista:estudio' %}" title="Agregar nuevo estudio"><i class="fa fa-plus"></i> Agregar</a>
+                    {%  endif %}
+                    <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                </div>
+            </div>
+
+              <!--MODAL AYUDA--------------------------->
+
+		    <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Estudio Entrevista</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+                              <p>La entrevista es una técnica de recolección de información que permite acceder al conocimiento
+                                  de las personas, revelando con ello su cotidianidad y las relaciones sociales que
+                                  mantienen. Debido a esto su aplicación en el proceso investigativo es de gran utilidad,
+                                  ya que aporta información valiosa relacionada a las creencias y experiencias de los actores
+                                  involucrados en dicho proceso (Estrada, R. E. L., & Deslauriers, J. P, 2011). </p>
+							  <p>En la presente ventana se visualizan los estudios Entrevista dentro de los cuales
+							    usted ejerce alguno(s) de los siguientes roles:
+								  <br>
+								  <br>
+								  <i class="fa fa-user"></i> Administrador: encargado de crear y finalizar el estudio.
+								  <br>
+								  <br>
+								  <i class="fa fa-user"></i> Coordinador: responsable de registrar las entradas necesarias
+                                  para el desarrollo del estudio (preguntas, escala de Likert y rondas).
+								  <br>
+								  <br>
+								  <i class="fa fa-users"></i> Experto: encargado de realizar los juicios a las preguntas
+                                  registradas por el coordinador</p>
+								  <br>
+								  <p style="color: black">Nota: El administrador y el coordinador no pueden hacer parte del grupo
+                                  de expertos.</p>
+							  </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/entrevista/filtrar_dataTable.js' %}"></script>
+{% endblock %}

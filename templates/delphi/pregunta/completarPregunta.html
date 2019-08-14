@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+{% endblock %}
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand" xmlns="">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+
+    <form class="" role="form" method="post" action="{% url 'delphi:completar_pregunta' pregunta.id %}">
+        {% csrf_token %}
+            <div class="box-header">
+                <h3 class="box-title">Nueva pregunta para:</h3> <span> {{ pregunta.cuestionario.nombre }}</span>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="form-group col-md-6" >
+                             <label class="control-label">Enunciado de la pregunta</label>
+                             {{ form.enunciado_pregunta }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-footer ">
+                <div class="form-group">
+                    <a href=" {% url 'delphi:preguntas' pregunta.sesion.id %}"> <button type="button" class="btn btn-warning"><i class="fa fa-remove"></i> Cancelar</button></a>
+                    <button type="submit" class="btn btn-success " id="guardar-pregunta"><i class="fa fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+    </form>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+    $(document).ready(function(){
+	$(':checkbox[readonly=readonly]').click(function(){
+		return false;
+	});
+    });
+    </script>
+{% endblock %}
+
+

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+   <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+{% endblock %}
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    {% if sesion.permitir_preguntas %}
+    <form class="" role="form"  method="post" action="{% url 'delphi:nueva_pregunta' sesion.id %}"> {% csrf_token %}
+         {% if request.user in sesion.cuestionario.delphi.coordinadores.all %}
+         <div class="box-header">
+                <h3 class="box-title">Nueva pregunta para:</h3> <span> {{ sesion.nombre }}</span>
+         </div>
+         <div class="box-body">
+             <div class="row">
+                 <div class="col-md-10">
+                     <div class="form-group col-md-6" >
+                         <label class="control-label">Seleccione el tipo de pregunta</label>
+                            {{ form.tipo_pregunta }}
+                     </div>
+                     <div class="form-group col-md-6" >
+                         <font style="vertical-align: inherit">
+                             <font style="vertical-align: inherit"> {{ form.de_control }} De control</font></font>
+                     <input class="form-control hidden" type="text" value="{{ sesion.id }}" name="sesion">
+                     <input class="form-control hidden" type="text" value="{{ user.id }}" name="autor">
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="box-footer ">
+                <div class="form-group">
+                    <a href="{% url 'delphi:preguntas' sesion.id %}">
+                        <button type="button" class="btn btn-warning"><i class="fa fa-remove"></i> Cancelar</button>
+                    </a>
+                    <button type="submit" class="btn btn-primary "><i class="fa fa-save"></i> Siguiente</button>
+
+                </div>
+            </div>
+        {% else %}
+            <h2>Usted no cuenta con permisos para acceder a esta página.</h2>
+        {% endif %}
+    </form>
+    {% else %}
+        <h2>No estan permitidas las pregntas.</h2>
+        <div class="box-footer ">
+                <div class="form-group">
+                    <a href="{% url 'delphi:detalle_cuestionario' sesion.cuestionario.id %}">
+                        <button type="button" class="btn btn-success"><i class="fa fa-check-circle"></i> Aceptar</button>
+                    </a>
+                </div>
+            </div>
+    {% endif %}
+{% endblock %}
+{% block js %}
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/select2.full.min.js' %}"></script>
+    <script>
+        $('.select2').select2()
+    </script>
+{% endblock %}

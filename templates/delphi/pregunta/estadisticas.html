@@ -1,0 +1,17 @@
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-lg-7">
+				<h3>{{ object.texto_pregunta }}</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4">
+                <span>Votos a favor:</span> <b>{{  pregunta.votos_positivos.count }} </b><br>
+                <span>Votos en contra: </span> <b>{{  pregunta.votos_negativos.count }}</b><br>
+                <span>Han votado:</span> <b>{{ pregunta.get_votos }}/{{ pregunta.sesion.cuestionario.delphi.coordinadores.all.count }}</b><span> participantes </span>
+                </p>
+			</div>
+		</div>
+	</div>
+</div>

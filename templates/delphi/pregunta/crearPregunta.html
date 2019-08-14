@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+{% endblock %}
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand" xmlns="">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+
+    <form class="" role="form" method="post" action="{% url 'delphi:agregar_pregunta' sesion.id %}">
+        {% csrf_token %}
+        {% if request.user in cuestionario.delphi.coordinadores.all %}
+
+            <div class="box-header">
+                <h3 class="box-title">Nueva pregunta para:</h3> <span> {{ sesion.nombre }}</span>
+            </div>
+            <div class="box-body">
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                        <label class="control-label">Tipo de pregunta</label>
+                            <select class="form-control" id="tipo_pregunta">
+                                <option value="1">Abierta</option>
+                                <option value="2">Comparativa</option>
+                                <option value="3">Estimacón Cuantitativa</option>
+                                <option value="4">Estimación Porcentual</option>
+                                <option value="5">Ranking</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-8">
+                            <label class="control-label">Enunciado</label>
+                            <input class="form-control " type="text" id="enunciado">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary js-agregar-opciones" id="agregar_opciones"
+                                    disabled="true">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                Agregar opciones
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <input class="form-control " type="text" value="{{ cuestionario.id }}" name="cuestionario">
+            </div>
+
+            <div class="box-footer ">
+                <div class="form-group">
+                    <a href="#">
+                        <button type="button" class="btn btn-warning"><i class="fa fa-remove"></i> Cancelar</button>
+                    </a>
+                    <button type="submit" class="btn btn-success" id="guardar-pregunta"><i class="fa fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+
+        {% else %}
+            <h2>Usted no cuenta con permisos para acceder a esta página.</h2>
+        {% endif %}
+    </form>
+    <div class="modal fade" id="modal-opciones">
+        <div class="modal-dialog">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        $(function () {
+            $("#tipo_pregunta").change(function (evt) {
+                var select = document.getElementById("tipo_pregunta");
+                var boton = document.getElementById("agregar_opciones");
+                boton.disabled = true;
+                if (evt.target.value == 1) {
+                    boton.disabled = true;
+                } else {
+                    boton.disabled = false
+                }
+            });
+
+        });
+
+        $(function () {
+
+            $(".js-agregar-opciones").click(function () {
+                $.ajax({
+                    url: '{% url 'delphi:agregar_opciones' %}',
+                    type: 'get',
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $("#modal-opciones").modal("show");
+                    },
+                    success: function (data) {
+                        $("#modal-opciones .modal-content").html(data.html_form);
+                    }
+                });
+            });
+
+        });
+
+        $(function () {
+
+            document.getElementById("guardar-pregunta").addEventListener('click', function (evt) {
+                //evt.preventDefault();
+                var tipo_pregunta = document.getElementById("tipo_pregunta").value;
+                var enunciado = document.getElementById("enunciado").value;
+                var id_cuestionario = document.getElementsByName("cuestionario").value;
+                pregunta = {tipo_pregunta:tipo_pregunta, enunciado: enunciado, id_cuestionario: id_cuestionario};
+
+                $.ajax({
+                    url: "{% url 'delphi:agregar_pregunta' sesion.id %}",
+                    cache:'false',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: {csrfmiddlewaretoken: '{{ csrf_token }}', content: JSON.stringify(pregunta)},
+                    success: function (response) {
+                        location.href = "{% url 'delphi:agregar_opciones' %}";
+                    }
+                });
+            });
+
+        });
+    </script>
+{% endblock %}
+
+

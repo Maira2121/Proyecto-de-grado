@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/response.min.css' %}">
+{% endblock %}
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Sesion:</h3> <span> {{ sesion.nombre }}</span>
+    </div>
+    <div class="box-body col-md-12">
+        {% for pregunta in preguntas %}
+            <div class="row col-md-10">
+                <div class="col-lg-8">
+                    <article>
+                        <header class="question-title">
+                            <h3>{{ pregunta.enunciado_pregunta }}</h3></header>
+                        {% if pregunta.tipo_pregunta == "numerica" %}
+                            {% for opcion in opciones %}
+                                {% if opcion.pregunta.id == pregunta.id %}
+                                    <div>
+                                        <ol>
+                                            <li class="range"><label
+                                                    class="range">{{ opcion.texto_opcion }} </label><input type="range"
+                                                                                                           min="{{ opcion.valor_inicio }}"
+                                                                                                           max="{{ opcion.valor_final }}"
+                                                                                                           step="1">
+                                            </li>
+                                        </ol>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% elif pregunta.tipo_pregunta == "texto" %}
+                            <div>
+                                <textarea cols="80" rows="3"></textarea>
+                            </div>
+                        {% elif pregunta.tipo_pregunta == "ranking" %}
+                            <ul id="sortable" class="sortable q_sortable ui-sortable">
+                                {% for opcion in opciones %}
+                                    {% if opcion.pregunta.id == pregunta.id %}
+                                        <li class="ui-accordion ui-sortable-handle"><span
+                                                class="ui-icon ui-icon-arrowthick-2-n-s"></span> {{ opcion }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% elif pregunta.tipo_pregunta == "unica" %}
+                            {% for opcion in opciones %}
+                            {% if opcion.pregunta.id == pregunta.id %}
+                            <div>
+                                <input type="radio" name="opcion" value="{{ opcion }}" id="{{ opcion }}">
+                                <span for="{{ opcion }}">{{ opcion }}</span>
+                            </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% for opcion in opciones %}
+                                {% if opcion.pregunta.id == pregunta.id %}
+                                    {% include "delphi/pregunta/tipoPregunta.html" %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </article>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="box-footer">
+        <div class="form-group">
+
+            <a class="btn btn-info" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i
+                    class="fa fa-book"></i> Ayuda</a>
+            {% if sesioncuestionario.cuestionario.delphi.moderador == request.user %}
+                <a class="btn bg-navy show-form" href="{% url 'delphi:rondas' sesioncuestionario.cuestionario.id %}">
+                    <i class="fa fa-plus"></i> Rondas
+                </a>
+                <a class="btn btn-success" href="{% url 'delphi:detalle_cuestionario' sesioncuestionario.cuestionario.id %}"><i
+                                    class="fa fa-check-circle"></i> Aceptar</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-participantes">
+        <div class="modal-dialog">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'js/select2.full.min.js' %}"></script>
+    <script src="{% static '/js/delphi/participantes.js' %}"></script>
+
+
+    <script>
+
+        $('.select2').select2();
+         $("#sortable").sortable();
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(':checkbox[readonly=readonly]').click(function () {
+                return false;
+            });
+        });
+    </script>
+{% endblock %}

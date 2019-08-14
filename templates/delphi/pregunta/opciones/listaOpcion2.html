@@ -1,0 +1,19 @@
+{% for opcion in opciones %}
+  <tr>
+    <td>{{ forloop.counter}}</td>
+    <td>{{ opcion.texto_opcion }}</td>
+
+    <td>  
+      <button class="btn btn-warning btn-xs show-form-update" data-url="{% url 'delphi:editar_opcion' opcion.id  %}">
+      <span class="fa fa-pencil"></span>
+      </button>
+      <button class="btn btn-danger btn-xs show-form-delete" data-url="{% url 'delphi:eliminar_opcion' opcion.id  %}">
+      <span class="fa fa-trash"></span>
+      </button>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="7" class="text-center bg-warning">No hay opciones</td>
+  </tr>
+{% endfor %}

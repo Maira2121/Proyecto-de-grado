@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block titulo_principal %}
+    Administración de estudios de Delphi
+{% endblock %}
+<head>
+    {% block extra_css %}
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+        {% block extra_css %}
+            <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+            <link rel="stylesheet" href="{% static 'css/style.css' %}">
+            <link rel="stylesheet" href="{% static 'css/response.min.css' %}">
+        {% endblock %}
+    {% endblock %}
+</head>
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Detalle del cuestionario:</h3> <span> {{ cuestionariodelphi }}</span>
+        {% if request.user in cuestionariodelphi.delphi.coordinadores.all %}
+            <a href="{% url 'delphi:agregar_pregunta' cuestionariodelphi.id %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">Agregar pregunta</i></button>
+            </a>
+        {% endif %}
+
+    </div>
+    <div class="box-body">
+        <table id="example1" class="table table-bordered table-striped dataTable">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th><b>Preguntas </b></th>
+                <th><b>Tipo de pregunta</b></th>
+                <th><b>Opciones</b></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if object %}
+                {% for pregunta in preguntas %}
+                    <tr id="tr{{ pregunta.id }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ pregunta.enunciado_pregunta }}</td>
+                        <td>{% include "delphi/pregunta/tipoPregunta.html" %}</td>
+
+                        <td>
+                            <a class="label label-success" href=" #"> <i
+                                    class="fa fa-pencil"></i></a>
+                            <a href="#modaleliminar" role="button" class="label  label-danger delete"
+                               data-toggle="modal" id="{{ delphi.id }}" data-name="{{ delphi.titulo }}"><i
+                                    class=" fa fa-times"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <h1>No se han creado preguntas para este estudio Delphi</h1>
+            {% endif %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>#</th>
+                <th><b>Pregunta </b></th>
+                <th><b>Tipo de pregunta</b></th>
+                <th><b>Opciones</b></th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="box-footer">
+        <div class="form-group">
+            <a class="btn btn-success" href="{% url 'delphi:Detalle_estudio' cuestionariodelphi.delphi_id %}"><i
+                    class="fa fa-arrow-left"></i> Atrás</a>
+            <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i
+                    class="fa fa-book"></i> Ayuda</a>
+        </div>
+    </div>
+
+    <!--MODAL AYUDA--------------------------->
+
+    <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Lista de preguntas</h4>
+                </div>
+                <div class="modal-body" style="text-align: justify">
+                    <p>
+                        Saludos! {{ request.user }}
+                    </p>
+                    <p>
+                        Usted tiene solo el rol de moderador en este estudio, por lo cual no puede garegar, eliminar o
+                        editar preguntas
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--END MODAL AYUDA -->
+
+    {% block extra_js %}
+        <script src="{% static '/js/delphi/dataTable/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static '/js/delphi/dataTable/dataTables.bootstrap.min.js' %}"></script>
+        <!-- page script -->
+        <script>
+            $(function () {
+                $('#example1').DataTable();
+                $("#sortable").sortable();
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

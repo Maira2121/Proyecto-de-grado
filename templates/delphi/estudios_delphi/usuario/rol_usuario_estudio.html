@@ -1,0 +1,16 @@
+
+    {% if request.user == delphi.moderador and request.user in delphi.coordinadores.all and request.user in delphi.participantes.all %}
+        <small class="badge bg-aqua-gradient">Moderador - Coordinador - Participante</small>
+    {% elif request.user == delphi.moderador and request.user in delphi.coordinadores.all %}
+    <small class="badge bg-light-blue">Moderador - Coordinador</small>
+    {% elif request.user == delphi.moderador and request.user in delphi.participantes.all %}
+        <span class="badge label-success"> Moderador - Participante</span>
+    {% elif request.user == delphi.moderador %}
+        <span class=" badge bg-green-light"> Moderador</span>
+    {% elif request.user in delphi.coordinadores.all and request.user in delphi.participantes.all %}
+        <small class="badge bg-gray">Coordinador - Participante</small>
+    {% elif request.user in delphi.coordinadores.all %}
+        <span class=" badge bg-blue">Coordinador</span>
+    {%else%}
+        <span class="badge bg-aqua-active">Participante</span>
+    {% endif %}
