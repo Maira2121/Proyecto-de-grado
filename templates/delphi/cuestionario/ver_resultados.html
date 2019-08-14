@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load core_extratags %}
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+
+{% block content %}
+    {% if resultados_preguntas %}
+        <div class="col-lg-10">
+        <a class="btn btn-success pull-right" href="{% url 'delphi:responder_cuestionario' cuestionario.id %}"><i
+                    class="fa fa-book"></i> Responder preguntas</a>
+        </div>
+        {% for resultado_pregunta in resultados_preguntas %}
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="box {% if resultado_pregunta.pregunta.tipo_pregunta != 'texto' %}col-md-8{% endif %}">
+                        <div class="box-header">
+                            <div class="xs-small-box bg-blue">
+                                <div class="inner">
+                                    {{ resultado_pregunta.pregunta }}
+                                    <div class="pull-right"><span class="pull-right"><small>{% trans 'Tipo de pregunta:' %} {{ resultado_pregunta.pregunta.get_tipo_pregunta_display }}</small></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            {% if resultado_pregunta.pregunta.tipo_pregunta != 'texto' %}
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>{% trans 'Respuesta' %}</th>
+                                        <th>{% trans 'Cantidad Respuestas' %}</th>
+                                        <th>{% trans 'Porcentaje (%)' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for resultado in resultado_pregunta.resultados %}
+                                        <tr>
+                                            <td>{{ resultado.respuesta }}</td>
+                                            <td>{{ resultado.cantidad }}</td>
+                                            <td>{{ resultado.porcentaje }} %</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <ul>
+                                    {% for resultado in resultado_pregunta.resultados %}
+                                        <li><i class="fa fa-comment "> </i> {{ resultado.respuesta.respuesta_texto }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h3> No se han generado resultados</h3>
+    {% endif %}
+    <div class="box-footer">
+        <div class="form-group">
+            <a class="btn btn-info" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i
+                    class="fa fa-book"></i> Ayuda</a>
+            <a class="btn btn-primary" href="{% url 'delphi:rondas' cuestionario.id %}"><i
+                    class="fa fa-arrow-left"></i> Aceptar</a>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script src="http://cdn.jsdelivr.net/jquery.flot/0.8.3/jquery.flot.min.js"></script>
+    {% for resultado_pregunta in resultados_preguntas %}
+        {% if resultado_pregunta.pregunta.tipo_pregunta != 'texto' %}
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    var data = JSON.parse('{{ resultado_pregunta.resultado_json|escapejs }}');
+                    console.log(data);
+                    $.plot($("#pie-chart-{{ resultado_pregunta.pregunta.id }}"), data,
+                        {
+                            series: {
+                                pie: {
+                                    show: true
+                                }
+                            },
+                            grid: {hoverable: true},
+                            legend: {
+                                show: false
+                            }
+                        });
+                });
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

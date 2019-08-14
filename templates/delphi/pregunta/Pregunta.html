@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+{% endblock %}
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Pregunta:</h3> <span> {{ pregunta.enunciado_pregunta }}</span>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-lg-8">
+                {% include "delphi/pregunta/tipo_pregunta_individual.html" %}
+            </div>
+        </div>
+    </div>
+
+    <div class="box-footer">
+        <div class="form-group">
+            <a class="btn btn-success" href="{% url 'delphi:preguntas' pregunta.cuestionario_id %}"><i
+                    class="fa fa-arrow-left"></i> Atrás</a>
+            <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i
+                    class="fa fa-book"></i> Ayuda</a>
+        </div>
+    </div>
+
+{% endblock %}
+{% block extra_js %}
+
+{% endblock %}

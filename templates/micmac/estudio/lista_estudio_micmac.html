@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block titulo_principal %}
+    Administración de estudios de Micmac
+{% endblock %}
+<head>
+    {% block extra_css %}
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+
+    {% endblock %}
+
+</head>
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Estudios Micmac</h3>
+        {% if request.user.is_superuser %}
+            <a href="{% url 'micmac:crear_estudio' %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">Agregar estudio</i></button>
+            </a>
+        {% endif %}
+    </div>
+    <div class="box-body">
+        <table id="tb-estudios" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th><b>Titulo </b></th>
+                <th style="text-align:center;"><b>Estado</b></th>
+                <th style="text-align: center;"><b>Rol de usuario</b></th>
+                <th style="text-align:center;"><b>Fecha de inicio</b></th>
+                <th style="text-align:center;"><b>Fecha de cierre</b></th>
+                <th><b>Acciones</b></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if object_list %}
+                {% for micmac in object_list %}
+                    <tr id="tr{{ micmac.id }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'micmac:detalle_estudio' micmac.id  %}">{{ micmac.titulo }}</a></td>
+
+                        {% if micmac.estado %}
+                            <td style="text-align:center;">Abierto
+                                <small class="badge bg-green"><i class="fa fa-check"></i></small>
+                            </td>
+                        {% else %}
+                            <td style="text-align:center;">Cerrado
+                                <small class="badge bg-red"><i class=" fa fa-times"></i></small>
+                            </td>
+                        {% endif %}
+                        <td style="text-align: center">
+                            {% include 'micmac/usuarios/rol_usuario_estudio.html' %}
+                        </td>
+                        <td>{{ micmac.fecha_inicio }}</td>
+                        <td>{{ micmac.fecha_final }}</td>
+                        <td>
+                            {% if request.user.is_authenticated and request.user == micmac.moderador %}
+                            <a class="badge btn-warning" href="{% url 'micmac:editar_estudio'  micmac.id %}"> <i
+                                    class="fa fa-pencil"></i></a>
+                            <a href="#myModal" role="button" class="btn-xs btn-danger delete" data-toggle="modal"
+                               data-id="{{ micmac.id }}" data-name="{{ micmac.titulo }}"><i
+                                    class=" fa fa-trash"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <h1>Usted no tiene asignado estudios Micmac</h1>
+            {% endif %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>#</th>
+                <th><b>Titulo</b></th>
+                <th style="text-align:center;"><b>Estado</b></th>
+                <th style="text-align:center;"><b>Rol</b></th>
+                <th style="text-align:center;"><b>Fecha de inicio</b></th>
+                <th style="text-align:center;"><b>Fecha de cierre</b></th>
+                <th><b>Acciones</b></th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    {# --------- Modal Eliminar ---------------- #}
+    <div id="myModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog" role="dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Eliminar Estudio</h4>
+                </div>
+                <div class="modal-body">
+                    <p>¿Realmente desea elimiar el estudio: <span id="modal_titulo"></span>?</p>
+                </div>
+                <div class="modal-footer">
+                    <form method="post" id="frmEliminar">
+                        {% csrf_token %}
+                        <input type="hidden" id="modal_idestudio" name="estudio_id">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Aceptar</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    {% block extra_js %}
+
+        <script src="{% static '/js/delphi/dataTable/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static '/js/micmac/eliminar.js' %}"></script>
+
+
+        <!-- page script -->
+        <script>
+            $(function () {
+                $('#tb-estudios').DataTable()
+            })
+
+
+        </script>
+    <script src="{% static 'js/micmac/crear_estudio.js' %}"></script>
+
+    {% endblock %}
+
+{% endblock %}

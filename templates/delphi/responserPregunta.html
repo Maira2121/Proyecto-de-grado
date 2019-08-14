@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+{% endblock %}
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+  {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+
+    <form class="" role="form" method="post">{% csrf_token %}
+
+            <div class="box-header">
+                <h3 class="box-title">{{ pregunta.enunciado_pregunta }}</h3>
+            </div>
+            <div class="box-body">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Responder</label>
+                            {{ form.respuesta }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-footer ">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary "><i class="fa fa-save"></i> Guardar</button>
+
+                </div>
+            </div>
+
+
+    </form>
+{% endblock %}
+{% block extra_js %}
+    <script>
+        console.log({{ cuestionario.id}});
+    </script>
+
+    <script>
+        $(function () {
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+        });
+    </script>
+{% endblock %}
+
+

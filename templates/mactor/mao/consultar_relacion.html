@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    {% if usuario != '' and relacion %}
+            <div class="matter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="widget-head">
+                                <div class="box-header with-border">
+                                  <h3 class="box-title">Detalle relación {{ relacion.tipo }}MAO</h3>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="padd">
+										<hr/>
+										<!-- Form starts.  -->
+                                    <form class="form-horizontal" role="form" method="post">
+                                        {% csrf_token %}
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Relación del actor</label>
+                                                    <input class="form-control" readonly value="{{ relacion.idActorY }}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Sobre el objetivo</label>
+                                                    <input class="form-control" readonly value="{{ relacion.idObjetivoX }}">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Valor</label>
+                                                    {% if relacion.tipo == 1 %}
+                                                        {% if relacion.valor == 0 %}
+                                                            <input class="form-control" readonly value="{{ relacion.valor }} - Neutro">
+                                                        {% elif influencia.valor == 1 %}
+                                                            <input class="form-control" readonly value="{{ relacion.valor }} - A favor">
+                                                        {% else %}
+                                                            <input class="form-control" readonly value="{{ relacion.valor }} - En contra">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if relacion.valor < 0 %}
+                                                            <input class="form-control" readonly value="{{ relacion.valor }} - En desacuerdo ">
+                                                        {% elif influencia.valor == 0 %}
+                                                            <input class="form-control" readonly value="{{ relacion.valor }} - Neutro ">
+                                                        {% else %}
+                                                            <input class="form-control" readonly value="{{ relacion.valor }} - Acuerdo ">
+                                                        {% endif %}
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Justificación</label>
+                                                    <textarea class="form-control" rows="10" readonly>{{ relacion.justificacion }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                         <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-3">
+                                                <a class="btn btn-success" href="{% url 'mactor:relacionesMAO' relacion.idActorY.idEstudio.id relacion.tipo %}" title="Relaciones {{ relacion.tipo }}MAO"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+</div>
+
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+{% endblock %}
+
+

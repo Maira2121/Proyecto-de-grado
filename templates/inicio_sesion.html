@@ -1,0 +1,52 @@
+
+{% load staticfiles %}
+{% block navbar %}
+{% endblock %}
+{% block sidebar %} {% endblock %}
+{% block title %}
+ {% endblock %}
+{% block title_foot %} {% endblock %}
+{% block content %}
+    <!-- Horizontal Form -->
+    <div class="col-sm-offset-4 col-sm-5">
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Inicio de sesión</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form method="post" action="{% url 'login' %}" class="form-horizontal"> {% csrf_token %}
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="username" class="col-sm-2 control-label">Usuario</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" placeholder="User name" name="username">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="username" class="col-sm-2 control-label">Password</label>
+                {{ form.errors }}
+                  <div class="col-sm-5">
+                    <input type="password" class="form-control" placeholder="Password" name="password">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox"> Remember me
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" class="btn btn-default">Cancel</button>
+                <input type="submit" class="btn btn-info pull-right" value="Ingresar">
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+    </div>
+{% endblock %}

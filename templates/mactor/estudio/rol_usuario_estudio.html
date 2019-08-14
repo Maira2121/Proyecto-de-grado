@@ -1,0 +1,16 @@
+
+    {% if request.user == estudio.idAdministrador and request.user == estudio.idCoordinador and request.user in estudio.idExpertos.all %}
+        <a class="btn btn-sm btn-success" style="width: 75%">Administrador - Coordinador - Experto</a>
+    {% elif request.user == estudio.idAdministrador and request.user == estudio.idCoordinador %}
+        <a class="btn btn-sm btn-success" style="width: 75%">Administrador - Coordinador</a>
+    {% elif request.user == estudio.idAdministrador and request.user in estudio.idExpertos.all %}
+        <a class="btn btn-sm btn-success" style="width: 75%"> Administrador - Experto</a>
+    {% elif request.user == estudio.idAdministrador %}
+        <a class="btn btn-sm btn-success" style="width: 75%"> Administrador</a>
+    {% elif request.user == estudio.idCoordinador and request.user in estudio.idExpertos.all %}
+        <a class="btn btn-sm btn-primary" style="width: 75%">Coordinador - Experto</a>
+    {% elif request.user == estudio.idCoordinador %}
+        <a class="btn btn-sm btn-warning" style="width: 75%">Coordinador</a>
+    {%else%}
+        <a class="btn btn-sm btn-default" style="width: 75%">Experto</a>
+    {% endif %}

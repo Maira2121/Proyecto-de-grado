@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+{% endblock %}
+{% block titulo_principal %}
+    Variables
+{% endblock %}
+{% block content_title %}
+    <a class="brand" xmlns="">Delphi: {{ estudiomicmac.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    <div class="box-header">
+        {% if request.user in estudiomicmac.coordinadores.all %}
+            <div class="small-box bg-aqua">
+            <div class="inner">
+                <h4>Usted ha sido seleccionado para participar como coordinador en el estudio:{{ estudiomicmac.titulo }}</h4>
+            </div>
+            </div>
+            <div>
+
+            <div><a href="{% url 'micmac:crear_variable' estudiomicmac.id %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">Agregar variable</i></button>
+            </a>
+            </div>
+            <div><a href="{% url 'micmac:crear_relacion' %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">crear relación</i></button>
+            </a>
+            </div>
+                <div><a href="{% url 'micmac:tabla_relacion' %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">Tabla</i></button>
+            </a>
+            </div>
+            <div><a href="{% url 'micmac:matriz_directa' %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">Matriz</i></button>
+            </a>
+            </div>
+            <div><a href="{% url 'micmac:grafica_rdirecta' %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">Grafica</i></button>
+            </a>
+            </div>
+            <div><a href="{% url 'micmac:json' %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">gra</i></button>
+            </a>
+            </div>
+            <div><a href="{% url 'micmac:grafica2' %}">
+                <button class="pull-right btn btn-success"><i class="fa fa-plus">grafica2</i></button>
+            </a>
+            </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="box-body">
+    <div class="callout bg-navy">
+        <h4><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">¡Variables!</font></font></h4><font style="vertical-align: inherit;">
+    </font>
+    </div>
+
+        <table id="tb-variables-generales" class="table table-bordered table-striped dataTable">
+            <thead>
+                <tr>
+                    <th width="3%">#</th>
+                    <th width="50%"><b>Nombre </b></th>
+                    <th width="10%"><b>Nombre Corto</b></th>
+                    <th width="10%"><b>Votos +</b></th>
+                    <th width="10%"><b>Votos -</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if object %}
+                    {% for variable in variables %}
+                        <tr id="tr{{ variable.id }}">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ variable.nombre }}</td>
+                            <td>{{ variable.nombre_corto }}</td>
+                            <td>{{ variable.get_votos_negativos }}</td>
+                            <td>{{ variable.get_votos_positivos }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <h1>No se han creado variables para este estudio Micmac</h1>
+                {% endif %}
+            </tbody>
+        </table>
+        {% if request.user in estudiomicmac.coordinadores.all %}
+            <div class="callout bg-navy-active">
+        <h4><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">¡Mis variables!</font></font></h4><font style="vertical-align: inherit;">
+    </font>
+    </div>
+            <table id="tb-mis-variables" class="table table-bordered table-striped dataTable">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="40%"><b>Nombre</b></th>
+                        <th width="15%" height="100%"><b>Nombre Corto</b></th>
+                        <th width="15%" height="100%"><b>Votos +</b></th>
+                        <th width="15%" height="100%"><b>Votos -</b></th>
+                        <th width="15%" height="100%"><b>Acciones</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if object %}
+                        {% for variable in mis_variables %}
+                            <tr id="tr{{ pregunta.id }}">
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ variable.nombre }}</td>
+                                <td>{{ variable.nombre_corto }}</td>
+                                <td>{{ variable.get_votos_positivos }}</td>
+                                <td>{{ variable.get_votos_negativos }}</td>
+                                 <td>{% if estudiomicmac.estado is True or estudiomicmac.fecha_final >= hoy %}
+                                    {% if variable.get_votos_positivos == "" or variable.get_votos_negativos == ""%}
+                                            <a class="btn-xs btn-warning" href="{% url 'micmac:editar_variable' variable.id %}"><span class="fa fa-pencil"></span></a>
+                                            <a href="#myModal" role="button" class="btn-xs btn-danger delete" data-toggle="modal"
+                               data-id="{{variable.id }}" data-name="{{ variable.nombre }}"><i
+                                    class=" fa fa-trash"></i></a>
+
+                                        {% endif %}
+                                {% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <h1>No se han creado variables para este estudio Micmac</h1>
+                    {% endif %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    <div class="box-footer">
+        <div class="form-group">
+            <a class="btn btn-success" href="{% url 'micmac:detalle_estudio' estudiomicmac.id %}"><i class="fa fa-arrow-left"></i> Atrás</a>
+            <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+        </div>
+    </div>
+    <!--MODAL AYUDA--------------------------->
+    <div id="modalAyuda">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
+
+    {# --------- Modal Eliminar ---------------- #}
+    <div id="myModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog" role="dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Eliminar Variable</h4>
+                </div>
+                <div class="modal-body">
+                    <p>¿Realmente desea elimiar la variable: <span id="modal_titulo"></span>?</p>
+                </div>
+                <div class="modal-footer">
+                    <form method="post" id="frmEliminar">
+                        {% csrf_token %}
+                        <input type="hidden" id="modal_idestudio" name="estudio_id">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Aceptar</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/micmac/jquery.js' %}"></script>
+    <script src="{% static '/js/micmac/jquery.form.min.js' %}"></script>
+    <script src="{% static 'js/micmac/jquery-ui.js' %}"></script>
+    <script src="{% static '/js/micmac/dataTable/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static '/js/micmac/dataTable/dataTables.bootstrap.min.js' %}"></script>
+
+    <script src="{% static '/js/micmac/eliminarVariable.js' %}"></script>
+    <script>
+        $(function () {
+            $('#tb-variables-generales').DataTable();
+            $('#tb-mis-variables').DataTable();
+        });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+
+        <table class="table table-bordered" id="tabla_mao">
+            <thead>
+                <tr>
+                    {% if valores_mao and objetivos %}
+                        <input style='text-align: center;' readonly type="text" size="4" value="">
+                        {% for objetivo in objetivos %}
+                            <input  id="{{objetivo.id}}" style='text-align: center; background-color: #5e5e5e; color: white' readonly title="{{objetivo.nombreLargo|upper}}"
+                                    size="4" value="{{objetivo.nombreCorto}}" data-toggle="modal" href="#modal_ConsultarObjetivo">
+                        {% endfor %}
+                        <input style='text-align: center; background-color: #5e5e5e; color: white' readonly type="text" size="4" title="IMPLICACIÓN POSITIVA (ACUERDOS)" value="+">
+                        <input style='text-align: center; background-color: #5e5e5e; color: white' readonly type="text" size="4"  title="IMPLICACION NEGATIVA (DESACUERDOS)" value="-">
+                        <input style='text-align: center; background-color: #5e5e5e; color: white;' readonly type="text" size="4" title="IMPLICACIÓN" value="Imp.">
+                        <br>
+                </tr>
+            </thead>
+            <tbody>
+                        {% for fila in valores_mao %}
+                            {% for celda in fila %}
+                                 <tr>
+                                    {% if celda.posicion == 0 and celda.valor != 'Mov.' and celda.valor != '-' and celda.valor != '+' %}
+                                        <input id="mid{{celda.valor}}" style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion|upper}}"
+                                                   value="{{celda.valor}}" data-toggle="modal" href="#modal_ConsultarActor">
+                                    {% elif celda.valor == 'Mov.' or celda.valor == '-' or celda.valor == '+' %}
+                                         <input style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion}}" value="{{celda.valor}}">
+                                    {% else %}
+                                         {% if celda.valor == 100 %}
+                                            <input style='text-align: center; background-color: #5e5e5e; color: white' readonly type="text" title="Relación sin registrar" size="4" value="X">
+                                        {% else %}
+                                            <input style='text-align: center;' readonly type="text" size="4" value="{{celda.valor}}" title="{{celda.descripcion}}">
+                                        {% endif %}
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            <br>
+                        {% endfor %}
+                {% else %}
+                    <h3>No se han registrado actores u objetivos en el estudio.</h3>
+                {% endif %}
+            </tbody>
+        </table>

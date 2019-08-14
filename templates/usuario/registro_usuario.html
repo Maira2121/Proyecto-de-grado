@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block navbar %}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+<section class="content-header">
+    <h1> {% block title %}Nuevo Coordinador{% endblock %} {% block title_foot %}{% endblock %}</h1>
+</section>
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {% include 'messages.html' %}
+        <div class="row">
+            <div class="col-md-4 ">
+                <div class="form-group">
+                  <label class="control-label">Nombre de usuario</label>
+                    <input class="form-control" type="text" name="username">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-1">
+                <div class="form-group">
+                  <label class="control-label">Correo</label>
+                    <input class="form-control" type="email" name="email">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-1">
+                <div class="form-group">
+                  <label class="control-label">Contraseña</label>
+                    <input class="form-control" type="password" name="password1">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-1">
+                <div class="form-group">
+                  <label class="control-label">Confirmar contraseña</label>
+                    <input class="form-control" type="password" name="password2">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="form-group">
+                  <button class="button btn-primary" type="submit">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

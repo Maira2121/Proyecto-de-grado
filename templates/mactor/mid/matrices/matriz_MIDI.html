@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    {% if usuario != '' %}
+
+        <div class="box">
+            <div class="box-header">
+                {% if consenso is True %}
+                    <h3 class="box-title">CONSENSO - Matriz de Influencias Directas e Indirectas</h3>
+                {% else %}
+                    <h3 class="box-title">MIDI - Matriz de Influencias Directas e Indirectas</h3>
+                {% endif %}
+                <input hidden class="col-sm-1" type="number" name="idEstudio" value="{{estudio.id}}">
+
+                {% include 'mactor/mid/matrices/opciones_midi.html' %}
+            </div>
+
+            <!-- /.box-header -->
+            <div class="box-body">
+
+                <table class="table table-bordered table-hover" id="tabla_midi">
+                    <thead>
+                        <tr>
+                            {% if actores and matriz %}
+                                <input style='text-align: center;' size="4" readonly value="">
+                                    {% for actor in actores %}
+                                        <input id="act{{actor.id}}" style='text-align: center; background-color: #5e5e5e; color: white' readonly  title="{{actor.nombreLargo|upper}}"
+                                               size="4" value="{{actor.nombreCorto}}" data-toggle="modal"
+                                               href="#modal_ConsultarActor">
+                                    {% endfor %}
+                                <input style='text-align: center; background-color: #5e5e5e; color: white' readonly size="4" title="INFLUENCIA DIRECTA E INDIRECTA" value="I.DI">
+                            {% endif %}
+                            <br>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if matriz %}
+                        {% for fila in matriz %}
+                            {% for celda in fila %}
+                                 <tr>
+                                    {% if celda.posicion == 0 and celda.valor != 'D.DI' %}
+                                        <input id="mid{{celda.valor}}" style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion|upper}}"
+                                                   value="{{celda.valor}}" data-toggle="modal" href="#modal_ConsultarActor">
+                                    {% elif celda.valor == 'D.DI' %}
+                                         <input style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion}}" value="{{celda.valor}}">
+                                    {% else %}
+                                        <input style='text-align: center;' readonly type="text" size="4" value="{{celda.valor}}" title="{{celda.descripcion}}">
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            <br>
+                        {% endfor %}
+                    {% else %}
+                        <h3>Finalice el registro de las influencias directas para visualizar la matriz MIDI.</h3>
+                    {% endif %}
+                    </tbody>
+                </table>
+
+                <br>
+                {% if consenso is True %}
+                    <div class="alert alert-info alert-dismissible">
+                         <br>
+                         <h4>Expertos en consenso = {{expertos}}</h4>
+                    </div>
+                {% endif %}
+                <br>
+
+            <!--BOTONES --------------------------------------------------->
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        {% if expertos and usuario != 'EXPERTO' %}
+                            <a class="btn btn-success" href="{% url 'mactor:consenso_mid' estudio.id 1 %}" title="Matriz MID consenso"><i class="fa fa-arrow-left"></i> Atrás</a>
+                        {% else %}
+                            <a class="btn btn-success" href="{% url 'mactor:matriz_mid' estudio.id %}" title="Matriz MID"><i class="fa fa-arrow-left"></i> Atrás</a>
+                        {% endif %}
+                        {% if expertos and matriz %}
+                            <a class="btn btn-primary" href="{% url 'mactor:consenso_mid' estudio.id 3 %}" title="Matriz Máxima"><i class="fa fa-table"></i> MAX</a>
+                            <a class="btn btn-primary" href="{% url 'mactor:consenso_mid' estudio.id 4 %}" title="Matriz de Balance Líquido"><i class="fa fa-table"></i> BL</a>
+                        {% elif matriz %}
+                            <a class="btn btn-primary" href="{% url 'mactor:matriz_maxima' estudio.id %}" title="Matriz Máxima"><i class="fa fa-table"></i> MAX</a>
+                            <a class="btn btn-primary" href="{% url 'mactor:matriz_balance' estudio.id %}" title="Matriz de Balance Líquido"><i class="fa fa-table"></i> BL</a>
+                        {% else %}
+                            <a class="btn btn-primary" disabled="True" title="Finalice primero MID"><i class="fa fa-table"></i> MAX</a>
+                            <a class="btn btn-primary" disabled="True" title="Finalice primero MID"><i class="fa fa-table"></i> BL</a>
+                        {% endif %}
+                        <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                    </div>
+                </div>
+
+            <!--MODAL CONSULTAR ACTOR----------------->
+
+            {% include 'mactor/actor/modal_detalle_actor.html' %}
+
+             <!--MODAL AYUDA--------------------------->
+
+		    <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Matriz de Influencias Directas e Indirectas</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							 <p>La Matriz de Influencias Directas e Indirectas (MIDI), calculada a partir de MID, permite
+                            tener en cuenta en el análisis la influencia que los actores reciben de forma indirecta, ya
+                            que un actor puede afectar a otro actuando sobre un tercero.
+                        </p>
+                        <br>
+                        <p>La columna Influencia Directa e Indirecta (I.DI), representa la influencia total (directa e
+                            indirecta) que el actor ejerce en el grupo de actores estudiado. Mientras que la fila
+                            Dependencia Directa e Indirecta (D.DI), la influencia total que el resto de actores ejerce
+                            sobre ese actor.
+                        </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/mactor/consultar_actor_objetivo_matriz.js'%}"></script>
+{% endblock %}

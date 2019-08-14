@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load core_extratags %}
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+
+{% block content %}
+    {% if request.user in cuestionario.delphi.participantes.all %}
+        <div class="row">
+            <div class="col-md-12">
+                <div id="finalizado">
+                    {% if finalizado %}
+                        <div class="alert alert-success">
+                            Has finalizado el cuestionario. Muchas gracias por tu tiempo.
+                            <a class="btn btn-success pull-right"
+                               href="{% url 'delphi:ver_resultados' cuestionario.id %}">Ver
+                                resultados</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    {% for pregunta in preguntas %}
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion"
+                                       href="#collapse{{ forloop.counter }}"
+                                       id="collapse_trigger{{ foorloop.counter }}"
+                                       aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                       aria-controls="collapse{{ forloop.counter }}" class="white">
+                                        <b>Pregunta # {{ forloop.counter }} :</b> {{ pregunta.enunciado_pregunta }}
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse{{ forloop.counter }}"
+                                 class="panel-collapse collapse {% if forloop.first %}in{% endif %}" role="tabpanel"
+                                 aria-labelledby="headingOne">
+                                <div class="panel-body panel-respuestas">
+                                    <div class="row">
+                                        <div id="error_{{ pregunta.id }}"></div>
+                                    </div>
+                                    <div class="row"
+                                         id="row_
+                                                 {% if not forloop.last %}{{ forloop.counter }}{% else %}last{% endif %}">
+                                        <form id="form_
+                                                {% if not forloop.last %}{{ forloop.counter }}{% else %}last{% endif %}"
+                                              action="{% url 'delphi:responder_cuestionario' cuestionario.id %}"
+                                              method="POST">{% csrf_token %}
+                                            {% if forms|index:pregunta.id|type == 'list' %}
+                                                {% with forms|index:pregunta.id as respuesta %}
+                                                    <div class="alert alert-success">
+                                                        {{ respuesta.0 }}
+                                                    </div>
+                                                    <ul class="task">
+                                                        {% for resp in respuesta.1 %}
+                                                            <li>
+                                                                {% if pregunta.tipo_pregunta == 'texto' %}
+                                                                    <div class="badge badge-success">
+                                                                        Respuesta :
+                                                                    </div>
+                                                                    {{ resp }}
+                                                                {% else %}
+                                                                    {% for r in resp %}
+                                                                        <div class="badge badge-success">
+                                                                            Respuesta {{ forloop.counter }} :
+                                                                        </div>
+                                                                        {{ r }}
+                                                                        <br/>
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endwith %}
+                                            {% else %}
+                                                <input type="hidden" name="type" value="{{ pregunta.tipo_pregunta }}"/>
+                                                <input type="hidden" name="pregunta" value="{{ pregunta.id }}"/>
+                                                {% include 'delphi/pregunta/_pregutna_form.html' with form=forms|index:pregunta.id %}
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <button id="respuesta-{{ forloop.counter }}" data-position="
+                                            {% if not forloop.last %}{{ forloop.counter }}{% else %}last{% endif %}"
+                                            class="btn btn-success pull-right responder">
+                                        {% if forloop.last %}Finalizar <i class="fa fa-check-circle-o"></i>{% else %}
+                                            Siguiente <i class="fa fa-angle-double-right"></i>{% endif %}
+                                    </button>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <h3>Usted no es participante de este cuestionario, por lo tanto no puede responder las preguntas</h3>
+    {% endif %}
+    <div class="box-footer">
+        <div class="form-group">
+            <a class="btn btn-primary" href="{% url 'delphi:rondas' cuestionario.id %}"><i
+                    class="fa fa-arrow-left"></i> Aceptar</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/delphi/responder_pregunta.js' %}"></script>
+{% endblock %}

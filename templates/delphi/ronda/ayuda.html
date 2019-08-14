@@ -1,0 +1,29 @@
+<div id="modal_ayuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                <h4 class="modal-title">Ayuda - Rondas</h4>
+            </div>
+            <div class="modal-body" style="text-align: justify">
+                <p>
+                    Las rondas permiten llevar a cabo el proceso de obtención de resltados,
+                    medida que los expertos responden las preguntas del cuestionario en curso.
+                    Si al finalizar una ronda los resultados alcanzados evidencian la
+                    necesidad de realizar o mejorar un cuestionario, los coordinador pueden
+                    registrar nuevas pregntas para que los expertos puedan responderlas en un nueva ronda.
+                </p>
+                {% if usuario == cuestionario.delpbi.moderador %}
+                    <p>Nota: Tenga en cuenta que mientras exista una ronda abierta, no será posible
+                        agregar una nueva.</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block titulo_principal %}
+    Crear estudio de Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Delphi</a>
+{% endblock %}
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    <div class="box-header">
+        <h2 class="box-title">Nueva Ronda para el cuestionario:</h2> <span> {{ cuestionario.nombre }}</span>
+    </div>
+    <form class="form-horizontal" role="form" method="POST"
+          action="{% url 'delphi:crear_ronda' cuestionario.id %}">{% csrf_token %}
+        <div class="box-body">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label class="control-label">Cuestionario</label>
+                    <input class="form-control" name="cuestionario" value="{{ cuestionario }}" disabled>
+                </div>
+                <div class="">
+                    <label class="control-label">Estudio</label>
+                    <input class="form-control" name="delphi" value="{{ cuestionario.delphi }}" disabled>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">Fecha Inicio</label>
+                    {{ form.fecha_inicio }}
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">Fecha Final</label>
+                    {{ form.fecha_final }}
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="control-label">Abierta</label>
+                    {{ form.abierto }}
+                </div>
+            </div>
+        </div>
+        <div class="box-footer">
+            <a href="{% url 'delphi:cuestionario' cuestionario.id %}">
+                <button type="button" id="" class="btn btn-warning"><i class="fa fa-trash"> Cancelar</i></button>
+            </a>
+            <button type="submit" id="" class="btn btn-success"><i class="fa fa-save"> Guardar</i></button>
+        </div>
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </form>
+{% endblock %}

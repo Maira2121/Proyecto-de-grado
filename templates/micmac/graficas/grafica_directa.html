@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div id="container" data-url="{% url 'micmac:grafica' %}"></div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script src="http://github.highcharts.com/highcharts-more.js"></script>
+  <script>
+    $.ajax({
+      url: $("#container").attr("data-url"),
+      dataType: 'json',
+      success: function (data) {
+        Highcharts.chart("container", data);
+      }
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% for escala in escalas %}
+  <tr>
+    <td>{{ forloop.counter}}</td>
+    <td>{{ escala.nombre }}</td>
+    <td>{{ escala.valor }}</td>
+    <td>  
+      <button class="btn btn-warning show-form-update" data-url="#">
+      <span class="fa fa-pencil"></span>
+      </button>
+      <button class="btn btn-danger show-form-delete" data-url="#">
+      <span class="fa fa-trash"></span>
+      </button>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="7" class="text-center bg-warning">No hay opciones</td>
+  </tr>
+{% endfor %}

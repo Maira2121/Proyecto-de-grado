@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+   <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+{% endblock %}
+{% block titulo_principal %}
+
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Micmac: {{ estudio.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    {% if listado_relacion %}
+        <table class="table table-bordered table-hover table-striped dataTable" role="grid" id="example-table">
+            <tbody>
+                <th></th>
+                {% for fila_header in nom_var %}
+                    {% block cabecera_columna%}
+                    {% if forloop.counter == 1%}
+                        {% for col_head in nom_var %}
+                            <th id="col_head" data-col="{{col_head.1}}">{{col_head.0}}</th>
+                        {% endfor %}
+                    {% endif %}
+                    {% endblock %}
+                     <tr>
+                         {% block cabecera_fila %}
+                        <th id="row_head" data-row="{{fila_header.1}}">{{fila_header.0}}</th>
+                         {% endblock %}
+                         {% block celdas%}
+                            {% for cell in nom_var  %}
+                                <td id="matriz_celda" data-row="{{fila_header.1}}" data-col="{{cell.1}}" class="text-center"></td>
+                            {% endfor %}
+                         {% endblock %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h1 class="text-center">NO HAY MATRIZ</h1>
+    {% endif %}
+{% endblock %}
+{% block extra_js %}
+    <script>
+            var lista_relacion = "{{listado_relacion|safe}}"
+            var tupla = []
+            var row_length = document.getElementById("example-table").rows.length - 1
+
+            function ListarRelacion(listado_relacion){
+                var lista = [], i=0, elemento1
+	            for (i=0;i<lista_relacion.length;++i){
+	                if( !(listado_relacion[i] == "[") && !(listado_relacion[i] == "]") && !(listado_relacion[i] == "(") && !(listado_relacion[i] == ")") && !(listado_relacion[i] == ",") && !(listado_relacion[i] == " ")){
+	                    elemento1=lista_relacion[i]
+	                    j = i+1
+	                    while( !(listado_relacion[j] == "[") && !(listado_relacion[j] == "]") && !(listado_relacion[j] == "(") && !(listado_relacion[j] == ")") && !(listado_relacion[j] == ",") && !(listado_relacion[j] == " ")){
+	                       elemento1 = elemento1.concat(lista_relacion[j])
+	                       j++
+	                    }
+	                    lista.push(elemento1)
+	                    i=j
+	                }
+	             }
+                return lista
+            }
+
+
+            function TuplaRelacion(lista_relacion){
+                var tuplaRel = [], i = 0, cont = 0
+                   for (i=0;i<(lista_relacion.length/3);++i){
+                        tuplaRel[i] = []
+                        for(j=0;j<3;++j){
+                            tuplaRel[i].push(lista_relacion[cont])
+                            ++cont;
+                        }
+                   }
+                return tuplaRel
+            }
+
+            var listRel = ListarRelacion(lista_relacion)
+            var tupRel = TuplaRelacion(listRel)
+            $('td').each(function(){
+                var celda = 0;
+                for (i=0;i<tupRel.length;++i){
+                    if(($(this).data('row')==tupRel[i][0]) && ($(this).data('col')==tupRel[i][1])){
+                       $(this).text(tupRel[i][2])
+                    }
+                }
+                 if($(this).data('row')==$(this).data('col')){
+                    $(this).text('0')
+                 }
+            });
+    </script>
+{% endblock %}

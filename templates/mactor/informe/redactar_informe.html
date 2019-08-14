@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    {% if usuario != 'EXPERTO' %}
+        <div class="matter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="widget-head">
+                                <div class="box-header with-border">
+                                  <h3 class="box-title">Redactar Informe Final</h3>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="padd">
+										<hr/>
+
+                                    {% include 'messages.html' %}
+
+										<!-- Form starts.  -->
+                                     <form class="form-horizontal" role="form" method="post">
+                                        {% csrf_token %}
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Informe*</label>
+                                                    <textarea name="informe" cols="40" rows="25" class="form-control" required id="id_informe"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label style="text-align: left"  class="control-label">Estado</label>
+                                                    <input type="checkbox" name="estado">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 col-md-offset-1" hidden>
+                                            <div  class="row">
+                                                <div class="form-group">
+                                                    <input class="form-control" type="number" value="{{estudio.id}}" name="idEstudio">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                         <div class="alert alert-info alert-dismissible">
+                                             <br>
+                                             <h4>El informe final podrá ser modificado hasta el {{ fecha_edicion }}.</h4>
+                                        </div>
+
+                                        <!--BOTONES-------------------------------------------------------->
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-8">
+                                                <a class="btn btn-success" href="{% url 'mactor:matriz_mao' estudio.id 3 %}" title="Relaciones 2MAO"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                                <a class="btn btn-primary" href="{%url 'mactor:estudios_mactor' %}" title="Lista de estudios"><i class="fa fa-list"></i> Estudios</a>
+                                                <button id="boton_guardar" type="submit" class="btn btn-primary" title="Guardar informe">
+                                                    <i class="fa fa-save"></i> Guardar
+                                                </button>
+                                                <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+
+            <!--MODAL AYUDA--------------------------->
+
+		    <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Informe final</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							  <p>Esta fase final del estudio MACTOR, tiene como objetivo la formulación de
+                                  preguntas clave y la redacción de recomendaciones estratégicas, tomando como
+                                  base el análisis de las posibles alianzas y conflictos entre los actores
+                                  evidenciados a través de las matrices anteriormente vistas; ayudando esto a
+                                  preguntarse cómo se verían afectadas las relaciones entre los actores y por
+                                  tanto el alcance de los objetivos ante aspectos como: el surgimiento y
+                                  desaparición de actores, los cambios de roles, etc.
+                                  (Arcade, Godet, Meunier, & Roubelat, 2004).
+                              </p>
+                              <p>
+                                  Nota 1: El informe final podrá ser modificado hasta 5 dias después de la fecha de cierre
+                                  del estudio.
+                                  <br>
+                                  <br>
+                                  Nota 2: El administrador se encuentra habilitado para realizar los aportes o modificaciones
+                                  que considere necesarios en el informe final, esto incluye finalizarlo.
+                              </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+
+                    </div>
+                </div>
+            </div>
+</div>
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+{% endblock %}
+
+

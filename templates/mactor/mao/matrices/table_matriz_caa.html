@@ -1,0 +1,40 @@
+
+<table class="table table-bordered" id="matriz_caa">
+    <thead>
+        <tr>
+            {%if actores %}
+                <input style='text-align: center;' size="4" readonly value="">
+                {% for actor in actores %}
+                    <input id="act{{actor.id}}" style='text-align: center; background-color: #5e5e5e; color: white' readonly title="{{actor.nombreLargo|upper}}" size="4"
+                           value="{{actor.nombreCorto}}" data-toggle="modal" href="#modal_ConsultarActor">
+                {% endfor %}
+            {% endif %}
+            <br>
+        </tr>
+    </thead>
+    <tbody>
+        {% if valores_caa %}
+            {% for fila in valores_caa %}
+                {% for celda in fila %}
+                    <tr>
+                        {% if celda.posicion == 0 and celda.valor != 'Ci' %}
+                            <input id="caa{{celda.valor}}" style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion|upper}}"
+                                   value="{{celda.valor}}" data-toggle="modal" href="#modal_ConsultarActor">
+                        {% elif celda.valor == 'Ci' %}
+                            <input style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion}}" value="{{celda.valor}}">
+                        {% else %}
+                            <input style='text-align: center;' readonly type="text" size="4" value="{{celda.valor}}" title="{{celda.descripcion}}">
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                <br>
+            {% endfor %}
+        {% else %}
+            {% if numero_matriz < 3 %}
+                <h3>Finalice el registro de las relaciones {{ numero_matriz }}MAO para visualizar la matriz {{ numero_matriz }}CAA.</h3>
+            {% else %}
+                <h3>Finalice la matriz MID y 2MAO para visualizar la matriz 3CAA.</h3>
+            {% endif %}
+        {% endif %}
+    </tbody>
+</table>

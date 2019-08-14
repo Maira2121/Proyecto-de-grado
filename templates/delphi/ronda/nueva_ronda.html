@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block titulo_principal %}
+    {% trans 'Delphi:' %} {{ object.delphi }}
+{% endblock %}
+{% block content_title %}
+    <a class="brand">Detalles del estudio: {{ object.delphi }}, {{ object.nombre }}</a>
+{% endblock %}
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    {% if request.user != cuestionario.delphi.moderador %}
+        <h2>Usted no cuenta con el permiso par acceder a esta página.</h2>
+    {% else %}
+        <div class="box-header">
+            <h3 class="box-title">Nueva ronda</h3>
+            <hr>
+        </div>
+        <form class="" role="form" action="{% url 'delphi:crear_ronda' cuestionario.id %}"
+              method="post"> {% csrf_token %}
+            {% if cant_sessiones_activas == 0 %}
+                {% if entradas_estudio  > 0 %}
+                    {% if cant_rondas_registradas == 0 or cant_rondas_activa == 0 %}
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    {{ form.numero.errors }}
+                                    <label class="control-label"
+                                           style="text-align: left">Número</label>
+                                    <input class="form-control" name="numero_ronda" readonly
+                                           value="{{ num_ronda }}">
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="control-label">Cuestionario</label>
+                                    <input class="form-control" name="cuestionario"
+                                           value="{{ cuestionario }}"
+                                           disabled>
+                                </div>
+                                <div class="col-md-2">
+                                    <label style="text-align: left"
+                                           class="control-label">Abierta</label>
+                                    {{ form.abierto }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 ">
+                                    <label class="control-label"
+                                           style="text-align: left">Descripción</label>
+                                    <textarea class="form-control" rows="2"
+                                              name="descripcion"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="control-label">Fecha inicio</label>
+                                    {{ form.fecha_inicio }}
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label">Fecha fin</label>
+                                    {{ form.fecha_final }}
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label" style="text-align: left">Número
+                                        preguntas</label>
+                                    <input class="form-control" name="numero_preguntas" readonly
+                                           value="{{ num_preguntas }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-md-offset-1" hidden>
+                                    <div class="form-group">
+                                        <label class="control-label"
+                                               style="text-align: left">Estudio</label>
+                                        <input class="form-control" type="text"
+                                               value="{{ cuestionario.id }}" name="cuestionario">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <a class="btn btn-primary"
+                               href="{% url 'delphi:rondas' cuestionario.id %}" title="Rondas"><i
+                                    class="fa fa-arrow-left"></i>
+                                Atrás</a>
+                            <button type="submit" class="btn btn-success" title="Guardar"><i
+                                    class="fa fa-save"></i> Guardar
+                            </button>
+                            <a class="btn btn-info" data-toggle="modal"
+                               href="#modal_ayuda"
+                               title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                            <a class="btn btn-warning"
+                               href="{% url 'delphi:rondas' cuestionario.id %}" title="Cancelar"><i
+                                    class="fa fa-warning"></i>
+                                Cancelar</a>
+
+                        </div>
+
+                    {% else %}
+                        <h3>No se puede registrar otra ronda mientras exista una anterior
+                            abierta.</h3>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-3">
+                                <a class="btn btn-success"
+                                   href="{% url 'delphi:rondas' cuestionario.id %}"
+                                   title="Rondas"><i
+                                        class="fa fa-check-circle"></i> Aceptar</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <h3>No hay preguntas registradas que conformaran esta ronda.</h3>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-md-8 col-md-offset-3">
+                            <a class="btn btn-success"
+                               href="{% url 'delphi:rondas' cuestionario.id %}"
+                               title="Rondas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <h3>Existe una sesión de cuestionario abierta, debe estar cerrada para poder crear una
+                    ronda.</h3>
+                <br>
+                <div class="form-group">
+                    <div class="col-md-8 col-md-offset-3">
+                        <a class="btn btn-success" href="{% url 'delphi:rondas' cuestionario.id %}"
+                           title="Rondas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                    </div>
+                </div>
+            {% endif %}
+        </form>
+
+        </div>
+
+
+
+        <!--INICIO MODAL AYUDA--------------------------->
+
+        <div id="modal_ayuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Ayuda - Nueva ronda</h4>
+                    </div>
+                    <div class="modal-body" style="text-align: justify">
+                        <p>
+                            Al registrar una ronda tenga en cuenta que:
+                            <br>
+                            <br>
+                            <i class="fa fa-check"></i> Solo es posible registrar una nueva ronda si no existe
+                            una
+                            anterior abierta.
+                            <br>
+                            <i class="fa fa-check"></i> La fecha inicial y final de la ronda no pueden
+                            sobrepasar la
+                            fecha final del estudio.
+                            <br>
+                            <i class="fa fa-check"></i> Si registra la ronda con estado abierto, se considera
+                            que
+                            los expertos pueden iniciar los
+                            juicios, por lo tanto se desactivarán las opciones que permiten cambios en el
+                            conjunto
+                            de datos de entrada (preguntas y escala).
+                            <br>
+                            <i class="fa fa-check"></i> Puede modificar los datos de la ronda mientras la fecha
+                            de
+                            cierre no se haya cumplido
+                            (esto incluye el estado de la ronda). Una vez cumplida la fecha de cierre la opción
+                            de
+                            editar ronda se desactivará.
+                            <br>
+                            <i class="fa fa-check"></i> Puede finalizar o desabilitar una ronda cambiando el
+                            estado
+                            de la misma a cerrado. Realizado
+                            esto, las opciones que permiten cambios al conjunto de datos de entrada se
+                            activarán.
+                            <br>
+                            <i class="fa fa-check"></i> Si al registrar una nueva ronda la anterior no ha
+                            cumplido
+                            la fecha de cierre pero se encuentra
+                            cerrada, esta fecha será modificada con la fecha del día anterior, por lo tanto
+                            dicha
+                            ronda será finalizada. será finalizada.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+    <!-- Datapicker -->
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/entrevista/controlFechas.js' %}"></script>
+{% endblock %}
+
+
+
+
+
+

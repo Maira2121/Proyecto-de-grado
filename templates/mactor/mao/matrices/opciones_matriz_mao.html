@@ -1,0 +1,19 @@
+
+    <div class="pull-right">
+        {% if estado_matriz == 1 %}
+            <select class="form-control" onchange="location = this.value;">
+                <option value="">Análisis {{ tipo }}MAO</option>
+                {% if usuario == 'COORDINADOR_EXPERTO' and consenso is False %}s
+                    <option value="{% url 'mactor:consenso_mao' estudio.id tipo 0 %}">Consenso {{ tipo }}MAO</option>
+                {% endif %}
+                {% if consenso is True %}
+                    <option value="{% url 'mactor:consenso_mao' estudio.id tipo 4%}">Histograma de Implicaciones</option>
+                    <option value="{% url 'mactor:consenso_mao' estudio.id tipo 5%}">Histograma de Movilizaciones</option>
+                {% else %}
+                    <option value="{% url 'mactor:implicacion' estudio.id tipo %}">Histograma de Implicaciones</option>
+                    <option value="{% url 'mactor:movilizacion' estudio.id tipo %}">Histograma de Movilizaciones</option>
+                {% endif %}
+            </select>
+        {% endif %}
+    </div>
+

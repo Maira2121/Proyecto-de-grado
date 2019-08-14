@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    {% if usuario != '' %}
+
+        {% include 'mactor/../../messages.html' %}
+
+        <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Relaciones de actores por objetivos {{ tipo }}MAO</h3>
+              <h3>{{ porcentaje }}% diligenciado.</h3>
+
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+               {% if relacionesMAO %}
+               <input type="text" class="form-control" style="width: 400px" id="myInput" onkeyup="filtrarTable()" placeholder="Buscar relaciones por actor.">
+               <br>
+
+              <table class="table table-bordered table-hover" id="tabla_mao">
+                <thead>
+                <tr>
+                  <th style="text-align: center">#</th>
+                  <th style="text-align: center">Relación del actor</th>
+                  <th style="text-align: center">Sobre el objetivo</th>
+                  <th style="text-align: center">Valor</th>
+                  <th style="text-align: center">Justificación</th>
+                  <th id="acciones" style="text-align: center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for mao in relacionesMAO %}
+                        <tr>
+                            <td style="text-align: center">{{forloop.counter}}</td>
+                            <td style="text-align: center">{{mao.idActorY.nombreLargo|upper}}</td>
+                            <td style="text-align: center">{{mao.idObjetivoX.nombreLargo|upper}}</td>
+                            <td style="text-align: center">{{mao.valor}}</td>
+                            <td style="text-align: justify">{{mao.justificacion}}</td>
+                            <td style="text-align: center; width: 15%">
+                                <a class="btn btn-primary" href="{% url 'mactor:consultar_mao' mao.id %}" title="Ver"><i class="fa fa-eye"></i></a>
+                                {% if usuario != 'COORDINADOR' %}
+                                    {% if estudio.estado is True %}
+                                        {% if tipo == '1' %}
+                                            <a class="btn btn-warning .edit" href="{% url 'mactor:editar_1mao' mao.id %}" title="Editar"><i class="fa fa-pencil"></i></a>
+                                        {% else %}
+                                            <a class="btn btn-warning .edit" href="{% url 'mactor:editar_2mao' mao.id %}" title="Editar"><i class="fa fa-pencil"></i></a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a class="btn btn-warning .edit" disabled="True" title="El estudio se encuentra cerrado."><i class="fa fa-pencil"></i></a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <h3>No existen relaciones {{ tipo }}MAO registradas.</h3>
+                {% endif %}
+                </tfoot>
+              </table>
+
+            <!------------PAGINACION--------->
+                        <ul class="pager">
+                                <li>
+                                    {% if page_obj.has_previous %}
+                                        <a href="?page={{page_obj.previous_page_number}}">Anterior</a>
+                                    {% endif %}
+                                </li>
+                                <li>
+                                    {% if page_obj.has_next %}
+                                        <a href="?page={{page_obj.next_page_number}}">Siguiente</a>
+                                    {% endif %}
+                                </li>
+                        </ul>
+            <!--BOTONES --------------------------------------------------->
+
+                {% include 'mactor/mao/botones_relacionesMAO.html' %}
+
+             <!--MODAL AYUDA--------------------------->
+
+		    <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Relaciones actores por objetivos {{ tipo }}MAO</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							 {% if tipo == '1' %}
+                                 <p>Teniendo en cuenta que las estrategias de convergencia y divergencia entre los
+										actores varían de un objetivo a otro, se evalua mediante las posiciones simples
+										1MAO la actitud actual de cada actor respecto a cada objetivo, indicando para ello
+										su posición a partir de los siguientes valores:<br>
+                                        <i class="fa fa-check"></i>(1): el actor es favorable al alcance del objetivo.<br>
+                                        <i class="fa fa-check"></i>(-1): el actor está en contra o es
+                                        desfavorable al alcance del objetivo.<br>
+                                        <i class="fa fa-check"></i>(0): el actor posee una posición neutra hacia el
+                                        alcance del objetivo.<br><br>
+                                        (Arcade, Godet, Meunier, & Roubelat, 2004)
+									</p>
+                             {% else %}
+                                 <p>
+                                     En este segundo análisis de actores y objetivos, se evalua nuevamente la actitud de cada
+                                    actor en relación al alcance de los objetivos, indicando esta vez su posición mediante una
+                                    escala de valores enteros que abarcan el rango -4 a 4, según si el grado de oposición o
+                                    acuerdo es muy alto, alto, medio o bajo, siendo los extremos del rango los niveles más
+                                    altos de desacuerdo y acuerdo respectivamente y 0 una posición neutra (Arcade, Godet,
+                                    Meunier, & Roubelat, 2004).
+                                 </p>
+                             {% endif %}
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/mactor/filtrar_dataTable.js' %}"></script>
+{% endblock %}

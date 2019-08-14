@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <canvas id="container"></canvas>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/micmac/Chart.js' %}"></script>
+  <script>
+    var ctx = document.getElementById("container");
+    var scatterChart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+        datasets: [{
+            label: 'Scatter Dataset',
+            data: [{x: -10,y: 0}]
+        },{
+            data: [{x: -8,y: 0}]
+        }]
+      },
+    });
+  </script>
+{% endblock %}

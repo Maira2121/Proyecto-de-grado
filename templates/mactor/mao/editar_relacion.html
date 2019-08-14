@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if mao.idActorY.idEstudio.estado is True and usuario != '' and usuario != 'COORDINADOR' %}
+            <div class="matter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="widget-head">
+                                <div class="box-header with-border">
+                                  <h3 class="box-title">Editar relación {{ mao.tipo }}MAO </h3>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="padd">
+										<hr/>
+										<!-- Form starts.  -->
+                                {% include 'mactor/../../messages.html' %}
+
+                                {% if mao %}
+                                    <form class="form-horizontal" role="form" method="post">
+                                        {% csrf_token %}
+
+                                        <div class="col-md-3 col-md-offset-1" hidden>
+											<div  class="row">
+												<div class="form-group">
+													<label class="control-label">Tipo</label>
+													<input class="form-control" type="number" value="{{ mao.tipo }}" name="tipo">
+												</div>
+											</div>
+										</div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    {{form.idActorY.erros}}
+                                                    <label class="control-label" style="text-align: left">Relación del actor*</label>
+                                                    <input class="form-control" readonly value="{{ mao.idActorY.nombreLargo }}">
+                                                    <input hidden class="col-sm-1" type="number" name="idActorY" id="id_idActorY" value="{{ mao.idActorY.id }}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    {{form.idActorX.errors}}
+                                                    <label class="control-label" style="text-align: left">Sobre el objetivo*</label>
+                                                    <input class="form-control" readonly value="{{ mao.idObjetivoX.nombreLargo }}">
+                                                    <input hidden class="col-sm-1" type="number" name="idObjetivoX" id="id_idObjetivoX" value="{{ mao.idObjetivoX.id }}">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2 col-md-offset-1">
+                                                <div class="form-group">
+                                                    {{form.valor|as_crispy_field }}
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Justificación*</label>
+                                                    {{form.justificacion}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div  class="row">
+                                            <div class="col-md-3 col-md-offset-1" hidden>
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Experto</label>
+                                                    <input class="form-control" type="text" value="{{user.id}}" name="idExperto">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                         <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-3">
+                                                <a class="btn btn-success" href="{% url 'mactor:relacionesMAO' mao.idActorY.idEstudio.id mao.tipo %}" title="Influencias directas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                                <button type="submit" class="btn btn-primary" title="Guardar"><i class="fa fa-save"></i> Guardar</button>
+                                                <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                {% endif %}
+
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+                <!--INICIO MODAL AYUDA--------------------------->
+
+            <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Relaciones actores por objetivos {{ tipo }}MAO</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							 {% if tipo == 1 %}
+                                 <p>Teniendo en cuenta que las estrategias de convergencia y divergencia entre los
+										actores varían de un objetivo a otro, se evalua mediante las posiciones simples
+										1MAO la actitud actual de cada actor respecto a cada objetivo, indicando para ello
+										su posición de acuerdo a los siguientes valores:
+                                        <i class="fa fa-check"></i>(1): el actor es favorable al alcance del objetivo.<br>
+                                        <i class="fa fa-check"></i>(-1): el actor está en contra o es
+                                        desfavorable al alcance del objetivo.<br>
+                                        <i class="fa fa-check"></i>(0): el actor posee una posición neutra hacia el
+                                        alcance del objetivo.<br><br>
+                                        (Arcade, Godet, Meunier, & Roubelat, 2004)
+									</p>
+                             {% else %}
+                                 <p>Teniendo en cuenta que las estrategias de convergencia y divergencia entre los
+										actores varían de un objetivo a otro, se evalua mediante las posiciones simples
+										1MAO la actitud actual de cada actor respecto a cada objetivo, indicando para ello
+										su posición de acuerdo a los siguientes valores:<br>
+                                        <i class="fa fa-check"></i>(1): el actor es favorable al alcance del objetivo.<br>
+                                        <i class="fa fa-check"></i>(-1): el actor está en contra o es
+                                        desfavorable al alcance del objetivo.<br>
+                                        <i class="fa fa-check"></i>(0): el actor posee una posición neutra hacia el
+                                        alcance del objetivo.<br><br>
+                                        (Arcade, Godet, Meunier, & Roubelat, 2004)
+									</p>
+                             {% endif %}
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+
+            </div>
+</div>
+
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+{% endblock %}
+
+

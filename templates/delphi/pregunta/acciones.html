@@ -1,0 +1,46 @@
+{#Boton de like#}
+{% if pregunta.sesion.estado or pregunta.sesion.fecha_final >= hoy %}
+    <a class="btn btn-xs btn-warning"
+       href="{% url 'delphi:editar_pregunta' pregunta.id %}"><span
+            class="fa fa-pencil"></span></a>
+    <a class="btn btn-xs btn-danger"
+       href="{% url 'delphi:eliminar_pregunta' pregunta.id %}"><span
+            class="fa fa-trash-o"></span></a>
+    <a class="btn btn-xs bg-blue-active" onclick="return votar"
+       href="{% url 'delphi:votar_positivo' pregunta.id %}">
+                                        <span class="fa fa-thumbs-o-up"><label
+                                                id="votos_positivos">({{ pregunta.votos_positivos.count }})</label></span>
+    </a>
+    <a class="btn btn-xs bg-blue-active"
+       href="{% url 'delphi:votar_negativo' pregunta.id %}"> <i
+            class="fa fa-thumbs-o-down"><label
+            id="votos_positivos">({{ pregunta.votos_negativos.count }})</label></i></a>
+    <a class="btn btn-xs btn-info "
+       href="#"> <i
+            class="fa fa-comment-o"></i></a>
+    <a onclick="return modals('{% url 'delphi:estadisticas' pregunta.id %}','Estadisticas / {{ pregunta.votos_positivos.count }}')"
+       class="btn btn-xs bg-purple">
+        <span class="fa fa-line-chart"></span>
+    </a>
+{% else %}
+    <a class="btn btn-xs btn-warning" disabled="True"
+       title="La sesión está cerrada, por tanto no puede edita la pregunta."><span
+            class="fa fa-pencil"></span></a>
+    <a class="btn btn-xs btn-danger" disabled="True"
+       title="La sesión está cerrada, por tanto no puede eliminar la pregunta."><span
+            class="fa fa-trash-o"></span></a>
+    <a class="btn btn-xs bg-blue-active" disabled="True"
+       title="La sesión está cerrada, por tanto no puede votar por la pregunta.">
+        <span class="fa fa-thumbs-o-up">({{ pregunta.votos_positivos.count }})</span>
+    </a>
+    <a class="btn btn-xs bg-blue-active" disabled="True"
+       title="La sesión está cerrada, por tanto no puede votar por la pregunta."> <span
+            class="fa fa-thumbs-o-down">({{ pregunta.votos_negativos.count }})</span></a>
+    <a class="btn btn-xs btn-info " disabled="True"
+       title="La sesión está cerrada, por tanto no puede comentar la pregunta."><i
+            class="fa fa-comment-o"></i></a>
+    <a onclick="return modals('{% url 'delphi:estadisticas' pregunta.id %}','Pregunta / {{ pregunta.enunciado_pregunta }}')"
+       class="btn btn-xs bg-purple">
+        <span class="fa fa-line-chart"></span>
+    </a>
+{% endif %}

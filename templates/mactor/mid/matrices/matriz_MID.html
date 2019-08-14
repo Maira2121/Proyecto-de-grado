@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    {% if usuario != '' %}
+
+        <div class="box">
+            <div class="box-header">
+                {% if consenso is True %}
+                    <h3 class="box-title">CONSENSO - Matriz de Influencias Directas</h3>
+                {% else %}
+                    <h3 class="box-title">MID - Matriz de Influencias Directas</h3>
+                {% endif %}
+                <input hidden class="col-sm-1" type="number" name="idEstudio" value="{{estudio.id}}">
+
+                <div class="pull-right">
+                    {% if estado_matriz == 1 %}
+                        <select name="graficos_midi" class="form-control" onchange="location = this.value;">
+                            <option value="">Análisis MID</option>
+                            {% if usuario == 'COORDINADOR_EXPERTO' and consenso is False %}
+                                <option value="{% url 'mactor:consenso_mid' estudio.id 1 %}">Consenso MID</option>
+                            {% endif %}
+                            {% if porcentaje == 100 %}
+                                {% if consenso is True %}
+                                    <option value="{% url 'mactor:consenso_mid' estudio.id 7 %}">Histograma Influencia - Dependencia</option>
+                                {% else %}
+                                    <option value="{% url 'mactor:histograma_mid' estudio.id %}">Histograma Influencia - Dependencia</option>
+                                {% endif %}
+                            {% endif %}
+                        </select>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- /.box-header -->
+            <div class="box-body">
+
+              <table class="table table-bordered table-hover" id="matriz_mid">
+                  <thead>
+                    <tr>
+                        {%if actores and matriz %}
+                            <input style='text-align: center;' type="text" size="4" readonly value="">
+                            {% for actor in actores %}
+                                <input id="act{{actor.id}}" name="col" title="{{actor.nombreLargo|upper}}" style='text-align: center; background-color: #5e5e5e; color:
+                                                             white'
+                                       readonly size="4" value="{{actor.nombreCorto}}" data-toggle="modal"
+                                       href="#modal_ConsultarActor">
+                            {% endfor %}
+                            <input style='text-align: center; background-color: #5e5e5e; color: white' readonly type="text" size="4" title="INFLUENCIA DIRECTA" value="I.D">
+                        {% endif %}
+                        <br>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if matriz %}
+                        {% for fila in matriz %}
+                            {% for celda in fila %}
+                                 <tr>
+                                    {% if celda.posicion == 0 and celda.valor != 'D.D' %}
+                                        <input id="mid{{celda.valor}}" style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion|upper}}"
+                                                   value="{{celda.valor}}" data-toggle="modal" href="#modal_ConsultarActor">
+                                    {% elif celda.valor == 'D.D' %}
+                                         <input style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion}}" value="{{celda.valor}}">
+                                    {% else %}
+                                         {% if celda.valor == 100 %}
+                                            <input style='text-align: center; background-color: #5e5e5e; color: white' readonly type="text" title="Influencia sin registrar" size="4" value="X">
+                                        {% else %}
+                                            <input style='text-align: center;' readonly type="text" size="4" value="{{celda.valor}}" title="{{celda.descripcion}}">
+                                        {% endif %}
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            <br>
+                        {% endfor %}
+                    {% else %}
+                        <h3>No se han registrado actores en el estudio.</h3>
+                    {% endif %}
+                  </tbody>
+              </table>
+            <br>
+            {% if consenso is True %}
+                <div class="alert alert-info alert-dismissible">
+                     <br>
+                     <h4>Expertos en consenso = {{expertos}}</h4>
+                </div>
+            {% endif %}
+            <br>
+
+
+            <!--BOTONES --------------------------------------------------->
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        {% if consenso is True and usuario == 'COORDINADOR_EXPERTO' %}
+                            <a class="btn btn-success" href="{% url 'mactor:matriz_mid' estudio.id %}" title="Matriz MID individual"><i class="fa fa-arrow-left"></i> Atrás</a>
+                        {% else %}
+                            <a class="btn btn-success" href="{% url 'mactor:influenciasMID' estudio.id %}" title="Influencias directas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                        {% endif %}
+                        {% if porcentaje == 100 %}
+                            {% if consenso is True %}
+                                <a class="btn btn-primary" href="{% url 'mactor:consenso_mid' estudio.id 2 %}" title="Consenso Matriz de Influencias Directas e Indirectas"><i class="fa fa-table"></i> MIDI</a>
+                            {% else %}
+                                <a class="btn btn-primary" href="{% url 'mactor:matriz_midi' estudio.id %}" title="Matriz de Influencias Directas e Indirectas"><i class="fa fa-table"></i> MIDI</a>
+                            {% endif %}
+                        {% else %}
+                            <a class="btn btn-primary" disabled="True" title="Finalice la matriz MID para acceder a MIDI"><i class="fa fa-table"></i> MIDI</a>
+                        {% endif %}
+                        <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                    </div>
+                </div>
+
+            <!--MODAL CONSULTAR ACTOR----------------->
+
+            {% include 'mactor/actor/modal_detalle_actor.html' %}
+
+             <!--MODAL AYUDA--------------------------->
+
+		    <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Influencias directas</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							 <p>La Matriz de Influencias Directas (MID), permite evidenciar el nivel de influencia
+                                que un actor ejerce sobre otro de forma directa, asi: el actor tiene poca o ninguna
+                                influencia sobre otro (0), el actor puede poner en riesgo de forma limitada los
+                                procesos operativos de gestión de otro (1), el actor puede poner en riesgo el éxito
+                                de los proyectos de otro actor (2), el actor puede poner en riesgo el cumplimiento
+                                de las misiones de otro actor (3) y por último el actor puede poner en riesgo la
+                                existencia o permanencia de otro (4) (Godet y Durance, 2009).
+                            </p>
+                            <p>La columna Influencia Directa (Inf. D), representa la influencia que determinado
+                                actor ejerce en el grupo de actores estudiado. Mientras que la fila Dependencia
+                                Directa (Dep. D), la influencia que el mismo actor recibe del resto de actores.
+                            </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/mactor/consultar_actor_objetivo_matriz.js'%}"></script>
+{% endblock %}

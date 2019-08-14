@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    {% if estudio.estado is True and usuario != 'EXPERTO' %}
+            <div class="matter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="widget-head">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Nueva ficha de estrategias </h3>
+                                    <input hidden class="col-sm-1" type="number" name="idEstudio" value="{{estudio.id}}">
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="padd">
+										<hr/>
+										<!-- Form starts.  -->
+                                {% include 'messages.html' %}
+
+                                {% if actores %}
+                                    <form id="form_ficha" class="form-horizontal" role="form" method="post">
+                                        {% csrf_token %}
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    {{form.idActorY.erros}}
+                                                    <label class="control-label" style="text-align: left">Estrategias del actor*</label>
+                                                    <select name="idActorY" class="form-control" required id="id_idActorY">
+                                                        <option value="" selected>----Seleccionar----</option>
+                                                        {% for actor in actores %}
+                                                            {% if actor.id in registrados_y %}
+                                                                <option value="{{actor.id}}">(Registrado) {{actor.nombreLargo|upper}}</option>
+                                                            {% else %}
+                                                                <option value="{{actor.id}}">{{actor.nombreLargo|upper}}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--DIV DESCRIPCION DEL ACTOR Y-->
+                                        <div class="row">
+                                            <div class="col-md-7 col-md-offset-1">
+                                                <div id="info"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    {{form.idActorX.errors}}
+                                                    <label class="control-label" style="text-align: left">Sobre el actor*</label>
+                                                    <select name="idActorX" class="form-control" required id="id_idActorX">
+                                                        <option value="" selected>----Seleccionar----</option>
+                                                        {% for actor in actores %}
+                                                            <option value="{{actor.id}}">{{actor.nombreLargo|upper}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--DIV DESCRIPCION DEL ACTOR X-->
+                                        <div class="row">
+                                            <div class="col-md-7 col-md-offset-1">
+                                                <div id="info2"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8 col-md-offset-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" style="text-align: left">Estrategias*</label>
+                                                    {{form.estrategia}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                         <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-3">
+                                                <a class="btn btn-success" href="{% url 'mactor:fichas' estudio.id %}" title="Fichas de estrategias"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                                <button type="submit" class="btn btn-primary" title="Guardar"><i class="fa fa-save"></i> Guardar</button>
+                                                <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                {% else %}
+                                    <h3>No se han registrado actores en el estudio.</h3>
+                                    <div class="form-group">
+                                        <div class="col-md-8 col-md-offset-3">
+                                            <a class="btn btn-success" href="{% url 'mactor:fichas' estudio.id %}" title="Fichas de estrategias"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                            <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+                <!--INICIO MODAL AYUDA--------------------------->
+
+		        <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Nueva ficha de estrategias</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							  <p>Ingrese los planes, motivaciones, limitaciones y  medios de acción de cada actor (elabore la tabla de la estrategias de los actores).
+                                  La información de la influencia de un actor sobre si mismo corresponde a una "tarjeta de identidad" que puede incluir información asociada
+                                  a las metas, fortalezas, debilidades del actor, siendo estos registros generalmente los mas completos. Por el contrario, muchas de las
+                                  acciones de un actor hacia otro se encuentran casi o totalmente vacías, estas describen los medios de acción que cada actor puede utilizar
+                                  contra los otros a fin de alcanzar sus metas.
+                              </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+            </div>
+</div>
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/mactor/consultar_actor.js' %}"></script>
+    <script src="{% static 'js/mactor/control_opciones_form_ficha_mid.js' %}"></script>
+    <script type="text/javascript">
+	    document.getElementById("id_idActorX").disabled = true;
+    </script>
+{% endblock %}
+
+

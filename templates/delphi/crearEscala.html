@@ -1,0 +1,66 @@
+{% load crispy_forms_tags %}
+<form method="post" data-url="{% url 'delphi:crear_escala' pregunta.id %}" class="create-form">
+	{% csrf_token %}
+            <div class="modal-header">
+            <h5 class="modal-title" ><strong>Opciones de respuesta</strong></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="control-label">Nombre</label>
+                                {{ form.nombre }}
+                            </div>
+                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10">
+                    <div class="form-group">
+                        {{form.valor.errors}}
+                        <label class="control-label">Valor </label>
+                        <select name="valor" class="form-control" required>
+                            <option value="" selected>--Seleccionar--</option>
+                            {% for valor in valores %}
+                                <option value="{{valor}}">{{valor}}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+
+                       <input class="form-control hidden" name="pregunta" value="{{ pregunta.id }}" id="pregunta_id" readonly>
+
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Agregar</button>
+            </div>
+    {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+</form>
+{% block extra_js %}
+
+{% endblock %}

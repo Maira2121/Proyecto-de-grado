@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+{% endblock %}
+{% block content_title %}
+    <a class="brand" xmlns="">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+<div class="box-header">
+    <h3 class="box-title">Pregunta:</h3> <span> {{ pregunta.enunciado_pregunta }}</span>
+    <button class="pull-right-container btn btn-primary show-form"
+            data-url="{% url 'delphi:crear_opcion' pregunta.id %}">
+        <span class="glyphicon glyphicon-plus"></span>
+        Agregar opción
+    </button>
+</div>
+<div class="box-body">
+    <table class="table table-bordered table-striped" id="tb-opciones">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Opción</th>
+            <th>Opciones de edición</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% include "delphi/pregunta/opciones/listaOpcion2.html" %}
+        </tbody>
+    </table>
+</div>
+<div class="box-footer">
+    <div class="form-group">
+        <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i
+                class="fa fa-book"></i> Ayuda</a>
+        <a class="btn btn-success" href="{% url 'delphi:preguntas' pregunta.sesion.id %}">Listo</a>
+    </div>
+</div>
+<div class="modal fade" id="modal-opciones">
+    <div class="modal-dialog">
+        <div class="modal-content"></div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static '/js/delphi/dataTable/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static '/js/delphi/dataTable/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static '/js/delphi/crud.js' %}"></script>
+    <script>
+        $(function () {
+            $('#tb-opciones').DataTable()
+        })
+    </script>
+{% endblock %}

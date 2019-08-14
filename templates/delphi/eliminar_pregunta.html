@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block extra_css %}
+{% endblock %}
+{% block titulo_principal %}
+    Crear estudio Cuestionario Delphi
+{% endblock %}
+{% block content_title %}
+    <a class="brand" xmlns="">Delphi: {{ delphi.titulo }}</a>
+{% endblock %}
+
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+     {% if request.user in pregunta.cuestionario.delphi.coordinadores.all and request.user == autor %}
+        <div class="matter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="widget-head">
+                                <div class="box-header with-border">
+                                  <h3 class="box-title">Eliminar Pregunta</h3>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="padd">
+										<hr/>
+
+										<!-- Form starts.  -->
+                                        <form class="form-horizontal" role="form" method="post">
+                                        {% csrf_token %}
+                                        <h3>Desea eliminar la pregunta:</h3> <span> {{ pregunta.enunciado_pregunta }}</span>
+
+                                        <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-3">
+                                                <a class="btn btn-success" href="{% url 'delphi:preguntas' pregunta.cuestionario.id %}"><i class="fa fa-arrow-left"></i> Cancelar</a>
+                                                <button type="submit" class="btn btn-danger" title="Eliminar"><i class="fa fa-trash"></i> Si, eliminar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+</div>
+{% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+{% endblock %}
+
+

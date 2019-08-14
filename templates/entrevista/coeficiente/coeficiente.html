@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+    {% if usuario == 'COORDINADOR' %}
+        <div class="box">
+            <div class="widget-head">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Coeficiente Alpha de Cronbach</h3>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                {% if cant_expertos %}
+                 <div class="alert alert-info alert-dismissible">
+                     <br>
+                     <h4>Coeficiente = {{ coeficiente }}</h4>
+                     {% if coeficiente >= 0.9 %}
+                        <h4><i class="fa fa-check"></i> Estado: Excelente </h4>
+                     {% elif coeficiente >= 0.8 %}
+                         <h4><i class="fa fa-check"></i> Estado: Bueno </h4>
+                     {% elif coeficiente >= 0.7 %}
+                         <h4><i class="fa fa-check"></i> Estado: Aceptable </h4>
+                     {% elif coeficiente >= 0.6 %}
+                         <h4><i class="fa fa-times"></i> Estado: Cuestionable </h4>
+                     {% elif coeficiente >= 0.5 %}
+                         <h4><i class="fa fa-times"></i> Estado: Pobre </h4>
+                     {% elif coeficiente < 0.5 %}
+                         <h4><i class="fa fa-times"></i> Estado: Inaceptable </h4>
+                     {% endif %}
+                    <br>
+                     <h4>Ronda #{{ ronda.numero_ronda }}.</h4>
+                      {% if ronda.estado is True %}
+                          <h4>Ronda abierta.</h4>
+                      {% else %}
+                          <h4>Ronda Cerrada.</h4>
+                      {% endif %}
+                      <h4>Expertos = {{ cant_expertos }}.</h4>
+                 </div>
+                    {% else %}
+                        <h3>Ningún experto ha finalizado los juicios de la ronda #{{ ronda.numero_ronda }}.</h3>
+                    {% endif %}
+
+            <!--BOTONES --------------------------------------------------->
+
+             <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        <a class="btn btn-success" href="{% url 'entrevista:rondas' estudio.id %}" title="Rondas"><i class="fa fa-arrow-left"></i> Rondas</a>
+                        <a class="btn btn-primary" data-toggle="modal" href="#modal_ayuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                        <a class="btn btn-primary" href="{% url 'entrevista:historial_coeficientes' estudio.id %}" title="Historial Coeficiente Alfa de Cronbach"><i class="fa fa-list"></i> Coeficientes</a>
+                    </div>
+             </div>
+
+            </div>
+            <!-- /.box-body -->
+
+            <!--INICIO MODAL AYUDA--------------------------->
+
+		     <div id="modal_ayuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Coeficiente Alfa de Cronbach</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							  <p>
+                                  De acuerdo a Oviedo y Campo-Arias(2005), el valor mínimo aceptable para el coeficiente
+                                  alfa de Cronbach es 0,70. Usualmente, se prefieren valores de alfa entre 0,80 y 0,90.
+                                  <br>
+                                  <br>
+                                  Para la evaluación del coeficiente hacen las siguientes recomendaciones:
+                                  <br>
+                                  <br>
+                                  <i class="fa fa-check"></i> Coeficiente alfa > 0.9 es excelente.
+                                  <br>
+                                  <i class="fa fa-check"></i> Coeficiente alfa > 0.8 es bueno.
+                                  <br>
+                                  <i class="fa fa-check"></i> Coeficiente alfa > 0.7 es aceptable.
+                                  <br>
+                                  <i class="fa fa-times"></i>  Coeficiente alfa > 0.6 es cuestionable.
+                                  <br>
+                                  <i class="fa fa-times"></i> Coeficiente alfa > 0.5 es pobre.
+                                  <br>
+                                  <i class="fa fa-times"></i> Coeficiente alfa < 0.5 es inaceptable.
+                                  <br>
+							  </p>
+                              <p>El alfa de Cronbach puede arrojar un valor negativo, esto puede ser ocasionado por
+                                  inconsistencias en la escala utilizada. Se recomienda eliminar o editar las preguntas
+                                  con mayor desacuerdo y revisar los puntajes de las alternativas de respuesta
+                                  de la escala, para aumentar la confiabilidad del cuestionario. </p>
+                              <p>Oviedo, H. C., & Arias, A. C. (2005). Aproximación al uso del coeficiente alfa de Cronbach. Revista colombiana de psiquiatría, 34(4), 572-580.</p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+          </div>
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+{% endblock %}

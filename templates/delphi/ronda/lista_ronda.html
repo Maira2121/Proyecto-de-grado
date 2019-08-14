@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+<head>
+    {% block extra_css %}
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+    {% endblock %}
+</head>
+{% block navbar %}
+    {% include "delphi/miNavBar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include "delphi/miSideBar.html" %}
+{% endblock %}
+{% block content %}
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Rondas</h3>
+            {% if request.user == cuestionario.delphi.moderador %}
+                <a class="btn btn-success pull-right" title="Ver" href="{% url 'delphi:crear_ronda' cuestionario.id %}">
+                    <i class="fa fa-plus-circle"></i> Nueva ronda</a>
+            {% endif %}
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            {% if rondas %}
+                <table id="tabla_rondas" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th style="text-align: center">Número</th>
+                    <th style="text-align: center">Fecha inicio</th>
+                    <th style="text-align: center">Fecha de cierre</th>
+                    <th style="text-align: center">Estado</th>
+                    <th id="acciones" style="text-align: center">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ronda in rondas %}
+                    <tr>
+                        <td style="text-align: center " width="30">{{ ronda.numero_ronda }}</td>
+                        <td style="text-align: center">{{ ronda.fecha_inicio }}</td>
+                        <td style="text-align: center">{{ ronda.fecha_final }}</td>
+                        <td style="text-align: center">
+                            {% if ronda.abierto is True %}
+                                <span>Abierto </span>
+                                <small class="badge bg-green"><i class="fa fa-check"></i></small>
+                            {% else %}
+                                <span>Cerrado </span>
+                                <small class="badge bg-red"><i class=" fa fa-times"></i></small>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center; width: 20%">
+                            <a class="label btn-primary" title="Ver"
+                               href="{% url 'delphi:ver_resultados' cuestionario.id %}"><i
+                                    class="fa fa-eye"></i></a>
+                            {% if request.user == cuestionario.delphi.moderador %}
+                                {% if cuestionario.delphi.estado is True %}
+                                    {% if ronda.fecha_final >= hoy %}
+                                        <a class="label label-warning .edit" title="Editar"
+                                           href="{% url 'delphi:editar_ronda' ronda.id %}"><i
+                                                class="fa fa-pencil"></i></a>
+                                    {% else %}
+                                        <a class="label label-warning .edit"
+                                           title="La ronda no se puede editar si ha transcurrido su periodo de desarrollo."
+                                           disabled="True"><i class="fa fa-pencil"></i></a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <h3>No se han registrado rondas en el estudio.</h3>
+            {% endif %}
+            </tbody>
+            </table>
+
+            <!--BOTONES --------------------------------------------------->
+
+            <div class="box-footer">
+                <a class="btn btn-primary" href="{% url 'delphi:estudios_delphi' %}"
+                   title="Lista de estudios"><i class="fa fa-list"></i> Estudios</a>
+
+                <a class="btn btn-info" data-toggle="modal" href="#modal_ayuda" title="Ayuda"><i
+                        class="fa fa-book"></i> Ayuda</a>
+                <a class="btn btn-success" href="{% url 'delphi:Detalle_estudio' cuestionario.delphi.id %}"
+                   title="Aceptar"><i class="fa fa-arrow-left"></i>
+                    Aceptar</a>
+            </div>
+
+            <!--INICIO MODAL AYUDA--------------------------->
+            {% include 'delphi/ronda/ayuda.html' %}
+        </div>
+        <!-- /.box-body -->
+    </div>
+{% endblock %}
+{% block extra_js %}
+
+    <script src="{% static '/js/delphi/dataTable/jquery.dataTables.min.js' %}"></script>
+    <!-- page script -->
+    <script>
+        $(function () {
+            $('#tabla_rondas').DataTable()
+        })
+    </script>
+{% endblock %}
+

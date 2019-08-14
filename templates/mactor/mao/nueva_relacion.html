@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if estudio.estado is True and usuario != '' and usuario != 'COORDINADOR' %}
+            <div class="matter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="widget-head">
+                                <div class="box-header with-border">
+                                  <h3 class="box-title">Nueva relación {{ tipo }}MAO </h3>
+                                  <h3>{{ porcentaje }}% diligenciado.</h3>
+                                    <input hidden class="col-sm-1" type="number" name="idEstudio" value="{{estudio.id}}">
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="padd">
+										<hr/>
+										<!-- Form starts.  -->
+                                {% include 'mactor/../../messages.html' %}
+
+                                {% if porcentaje < 100 %}
+                                    {% if actores and objetivos %}
+                                        <form id="form_{{ tipo }}mao" class="form-horizontal" role="form" method="post">
+                                            {% csrf_token %}
+
+                                            <div class="col-md-3 col-md-offset-1" hidden>
+                                                <div  class="row">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Tipo</label>
+                                                        <input class="form-control" type="number" value="{{ tipo }}" name="tipo">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-8 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        {{form.idActorY.erros}}
+                                                        <label class="control-label" style="text-align: left">Relación del actor*</label>
+                                                        <select name="idActorY" class="form-control" required id="id_idActorY">
+                                                            <option value="" selected>----Seleccionar----</option>
+                                                            {% for actor in actores %}
+                                                                {% if actor.id in registrados_y %}
+                                                                    <option value="{{actor.id}}">(Registrado) {{actor.nombreLargo|upper}}</option>
+                                                                {% else %}
+                                                                    <option value="{{actor.id}}">{{actor.nombreLargo|upper}}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--DIV DESCRIPCION DEL ACTOR Y-->
+                                            <div class="row">
+                                                <div class="col-md-7 col-md-offset-1">
+                                                    <div id="info"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-8 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        {{form.idObjetivoX.errors}}
+                                                        <label class="control-label" style="text-align: left">Sobre el objetivo*</label>
+                                                        <select name="idObjetivoX" class="form-control" required id="id_idObjetivoX">
+                                                            <option value="" selected>----Seleccionar----</option>
+                                                            {% for objetivo in objetivos %}
+                                                                <option value="{{objetivo.id}}">{{objetivo.nombreLargo|upper}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        {{form.valor|as_crispy_field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--DIV DESCRIPCION DEL OBJETIVO X-->
+                                            <div class="row">
+                                                <div class="col-md-7 col-md-offset-1">
+                                                    <div id="info2"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-8 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        <label class="control-label" style="text-align: left">Justificación*</label>
+                                                        <textarea class="form-control" rows="3" name="justificacion"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div  class="row">
+                                                <div class="col-md-3 col-md-offset-1" hidden>
+                                                    <div class="form-group">
+                                                        <label class="control-label" style="text-align: left">Experto</label>
+                                                        <input class="form-control" type="text" value="{{user.id}}" name="idExperto">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                             <div class="form-group">
+                                                <div class="col-md-8 col-md-offset-3">
+                                                    <a class="btn btn-success" href="{% url 'mactor:relacionesMAO' estudio.id tipo %}" title="Influencias directas"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                                    <button type="submit" class="btn btn-primary" title="Guardar"><i class="fa fa-save"></i> Guardar</button>
+                                                    <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    {% else %}
+                                        <h3>No se han registrado los actores u objetivos necesarios.</h3>
+                                        <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-3">
+                                                <a class="btn btn-success" href="{% url 'mactor:relacionesMAO' estudio.id tipo %}" title="Relaciones actores x por objetivo {{ tipo }}MAO"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                                <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-info alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                        <h4><i class="icon fa fa-info"></i></h4>
+                                        <h3>Ha finalizado la Matriz de actores x objetivos {{ tipo }}MAO.
+                                        <br>
+                                        Gracias por participar.
+                                        </h3>
+                                        <br>
+                                        <h4>Puede editar las relaciones registradas, mientras el estudio se encuentre abierto.</h4>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-8 col-md-offset-3">
+                                            <a class="btn btn-success" href="{% url 'mactor:relacionesMAO' estudio.id tipo %}" title="Relaciones actores x por objetivo {{ tipo }}MAO"><i class="fa fa-arrow-left"></i> Atrás</a>
+                                            <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+  <!--INICIO MODAL AYUDA--------------------------->
+
+     <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Relaciones actores por objetivos {{ tipo }}MAO</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							 {% if tipo == 1 %}
+                                 <p>Teniendo en cuenta que las estrategias de convergencia y divergencia entre los
+										actores varían de un objetivo a otro, se evalua mediante las posiciones simples
+										1MAO la actitud actual de cada actor respecto a cada objetivo, indicando para ello
+										su posición de acuerdo a los siguientes valores:<br>
+                                        <i class="fa fa-check"></i>(1): el actor es favorable al alcance del objetivo.<br>
+                                        <i class="fa fa-check"></i>(-1): el actor está en contra o es
+                                        desfavorable al alcance del objetivo.<br>
+                                        <i class="fa fa-check"></i>(0): el actor posee una posición neutra hacia el
+                                        alcance del objetivo.<br><br>
+                                        (Arcade, Godet, Meunier, & Roubelat, 2004)
+									</p>
+                             {% else %}
+                                 <p>
+                                    En esta segunda matriz de actores por objetivos, se evalua nuevamente la actitud de cada
+                                    actor en relación al alcance de los objetivos, indicando esta vez su posición mediante una
+                                    escala de valores enteros que abarcan el rango -4 a 4, según si el grado de oposición o
+                                    acuerdo es muy alto, alto, medio o bajo, siendo los extremos del rango los niveles más
+                                    altos de desacuerdo y acuerdo respectivamente y 0 una posición neutra (Arcade, Godet,
+                                    Meunier, & Roubelat, 2004).
+                                 </p>
+                             {% endif %}
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+            </div>
+</div>
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/mactor/consultar_actor.js' %}"></script>
+    <script src="{% static 'js/mactor/consultar_objetivo.js' %}"></script>
+    <script src="{% static 'js/mactor/control_opciones_select_mao.js' %}"></script>
+    <script type="text/javascript">
+        document.getElementById("id_idObjetivoX").disabled = true;
+    </script>
+{% endblock %}
+
+

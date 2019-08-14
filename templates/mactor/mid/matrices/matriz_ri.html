@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    {% if usuario != '' %}
+
+        <div class="box">
+            <div class="box-header">
+                {% if consenso is True %}
+                    <h3 class="box-title">CONSENSO - Coeficiente de Relación de Fuerza de los actores</h3>
+                {% else %}
+                    <h3 class="box-title">Ri - Coeficiente de Relación de Fuerza de los actores</h3>
+                {% endif %}
+                <input hidden class="col-sm-1" type="number" name="idEstudio" value="{{estudio.id}}">
+
+                <div class="pull-right">
+                    {% if lista_contexto %}
+                        <select name="graficos_ri" class="form-control" onchange="location = this.value;">
+                            <option value="">Análisis Ri</option>
+                            {% if consenso is True %}
+                                <option value="{% url 'mactor:consenso_mid' estudio.id 9 %}">Histograma Ri</option>
+                            {% else %}
+                                <option value="{% url 'mactor:histograma_ri' estudio.id %}">Histograma Ri</option>
+                            {% endif %}
+                        </select>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- /.box-header -->
+            <div class="box-body">
+
+                <table class="table table-bordered" id="tabla_ri">
+                    <thead>
+                        {% if lista_contexto %}
+                            <tr>
+                                <input style='text-align: center;' readonly type="text" size="4" value="">
+                                <input style='text-align: center; background-color: #5e5e5e; color: white' readonly type="text" size="4" value="Ri" title="Coeficiente de Relaciones de Fuerza">
+                                <br>
+                            </tr>
+                        {% endif %}
+                    </thead>
+                    <tbody>
+                        {% if lista_contexto %}
+                        {% for fila in lista_contexto %}
+                            {% for celda in fila %}
+                                 <tr>
+                                    {% if celda.posicion == 0 %}
+                                        <input id="mid{{celda.valor}}" style='text-align: center; background-color: #5e5e5e; color: white ' readonly  size="4" title="{{celda.descripcion|upper}}"
+                                                   value="{{celda.valor}}" data-toggle="modal" href="#modal_ConsultarActor">
+                                    {% else %}
+                                        <input style='text-align: center;' readonly type="text" size="4" value="{{celda.valor}}" title="{{celda.descripcion}}">
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            <br>
+                        {% endfor %}
+                    {% else %}
+                        <h3>Finalice el registro de las influencias directas para visualizar la matriz Ri.</h3>
+                    {% endif %}
+                        <br>
+                    </tbody>
+                </table>
+
+                <br>
+                {% if consenso is True %}
+                    <div class="alert alert-info alert-dismissible">
+                         <br>
+                         <h4>Expertos en consenso = {{expertos}}</h4>
+                    </div>
+                {% endif %}
+                <br>
+
+
+            <!--BOTONES --------------------------------------------------->
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        {% if expertos and usuario == 'COORDINADOR_EXPERTO' %}
+                            <a class="btn btn-success" href="{% url 'mactor:consenso_mid' estudio.id 2 %}" title="Matriz MIDI consenso"><i class="fa fa-arrow-left"></i> Atrás</a>
+                        {% else %}
+                            <a class="btn btn-success" href="{% url 'mactor:matriz_midi' estudio.id %}" title="Matriz MIDI"><i class="fa fa-arrow-left"></i> Atrás</a>
+                        {% endif %}
+                        <a class="btn btn-primary" data-toggle="modal" href="#modalAyuda" title="Ayuda"><i class="fa fa-book"></i> Ayuda</a>
+                    </div>
+                </div>
+
+            <!--MODAL CONSULTAR ACTOR----------------->
+
+            {% include 'mactor/actor/modal_detalle_actor.html' %}
+
+             <!--MODAL AYUDA--------------------------->
+
+		    <div id="modalAyuda" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					  <div class="modal-content">
+						  <div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+							  <h4 class="modal-title">Ayuda - Coeficiente de fuerza Ri</h4>
+						  </div>
+						  <div class="modal-body" style="text-align: justify">
+							<p>El coeficiente Ri, representa las relaciones de fuerza existentes entre los
+                            actores y permite diferenciar a los actores según su mayor o menor capacidad
+                            para condicionar las actuaciones de los demás, al igual que su mayor o menor
+                            dependencia respecto a ellos (Castro y Perestrelo, 2000).</p><br>
+                        <p>
+                            Los actores con coeficiente ri mayor poseen una débil o nula dependencia respecto
+                            a los otros actores y por lo tanto corresponden a los actores clave
+                            del estudio, ya que ejercen mayor influencia por su poder o liderazgo.
+                        </p>
+						  </div>
+						  <div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+
+    {% else %}
+        <h2>No cuenta con permisos para acceder a esta página.</h2>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/mactor/consultar_actor_objetivo_matriz.js'%}"></script>
+{% endblock %}
