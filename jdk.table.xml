@@ -1,0 +1,233 @@
+<application>
+  <component name="ProjectJdkTable">
+    <jdk version="2">
+      <name value="Python 3.7 (src)" />
+      <type value="Python SDK" />
+      <version value="Python 3.7.2" />
+      <homePath value="C:\Users\maira\OneDrive\Proyecto\src\venv\Scripts\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://C:/Program Files/Python37/DLLs" type="simple" />
+            <root url="file://C:/Program Files/Python37/Lib" type="simple" />
+            <root url="file://C:/Program Files/Python37" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Proyecto/src/venv" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Proyecto/src/venv/Lib/site-packages" type="simple" />
+            <root url="jar://$USER_HOME$/OneDrive/Proyecto/src/venv/Lib/site-packages/setuptools-39.1.0-py3.7.egg!/" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Proyecto/src/venv/Lib/site-packages/pip-10.0.1-py3.7.egg" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/421569067" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/OneDrive/Proyecto/src" />
+    </jdk>
+    <jdk version="2">
+      <name value="Python 3.6 (src)" />
+      <type value="Python SDK" />
+      <version value="Python 3.6.3" />
+      <homePath value="C:\Users\maira\OneDrive\Proyecto\src\venv-36\Scripts\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://C:/Program Files/Python36/DLLs" type="simple" />
+            <root url="file://C:/Program Files/Python36/Lib" type="simple" />
+            <root url="file://C:/Program Files/Python36" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Proyecto/src/venv-36" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Proyecto/src/venv-36/Lib/site-packages" type="simple" />
+            <root url="jar://$USER_HOME$/OneDrive/Proyecto/src/venv-36/Lib/site-packages/setuptools-39.1.0-py3.6.egg!/" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Proyecto/src/venv-36/Lib/site-packages/pip-10.0.1-py3.6.egg" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/1525044305" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/OneDrive/Proyecto/src" />
+    </jdk>
+    <jdk version="2">
+      <name value="Python 3.7" />
+      <type value="Python SDK" />
+      <version value="Python 3.7.2" />
+      <homePath value="C:\Program Files\Python37\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://C:/Program Files/Python37/DLLs" type="simple" />
+            <root url="file://C:/Program Files/Python37/Lib" type="simple" />
+            <root url="file://C:/Program Files/Python37" type="simple" />
+            <root url="file://C:/Program Files/Python37/Lib/site-packages" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/-991083293" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional />
+    </jdk>
+    <jdk version="2">
+      <name value="Python 3.6 (Django-Likes-master)" />
+      <type value="Python SDK" />
+      <version value="Python 3.6.3" />
+      <homePath value="C:\Users\maira\OneDrive\Django-Likes-master\venv\Scripts\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://C:/Program Files/Python36/DLLs" type="simple" />
+            <root url="file://C:/Program Files/Python36/Lib" type="simple" />
+            <root url="file://C:/Program Files/Python36" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Django-Likes-master/venv" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Django-Likes-master/venv/Lib/site-packages" type="simple" />
+            <root url="jar://$USER_HOME$/OneDrive/Django-Likes-master/venv/Lib/site-packages/setuptools-39.1.0-py3.6.egg!/" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Django-Likes-master/venv/Lib/site-packages/pip-10.0.1-py3.6.egg" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/1592094740" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/OneDrive/Django-Likes-master" />
+    </jdk>
+    <jdk version="2">
+      <name value="Python 3.6 (prospectiva)" />
+      <type value="Python SDK" />
+      <version value="Python 3.6.3" />
+      <homePath value="C:\Users\maira\OneDrive\Personal\lvelezsantos-prospectiva-02c617d41e49\prospectiva\venv\Scripts\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://C:/Program Files/Python36/DLLs" type="simple" />
+            <root url="file://C:/Program Files/Python36/Lib" type="simple" />
+            <root url="file://C:/Program Files/Python36" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Personal/lvelezsantos-prospectiva-02c617d41e49/prospectiva/venv" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Personal/lvelezsantos-prospectiva-02c617d41e49/prospectiva/venv/Lib/site-packages" type="simple" />
+            <root url="jar://$USER_HOME$/OneDrive/Personal/lvelezsantos-prospectiva-02c617d41e49/prospectiva/venv/Lib/site-packages/setuptools-39.1.0-py3.6.egg!/" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/Personal/lvelezsantos-prospectiva-02c617d41e49/prospectiva/venv/Lib/site-packages/pip-10.0.1-py3.6.egg" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/271834867" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/OneDrive/Personal/lvelezsantos-prospectiva-02c617d41e49/prospectiva" />
+    </jdk>
+    <jdk version="2">
+      <name value="Python 2.7 (softprosp)" />
+      <type value="Python SDK" />
+      <version value="Python 3.6.4" />
+      <homePath value="C:\Users\maira\OneDrive\softprosp\venv\Scripts\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://C:/Program Files/Python36/DLLs" type="simple" />
+            <root url="file://C:/Program Files/Python36/Lib" type="simple" />
+            <root url="file://C:/Program Files/Python36" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/softprosp/venv" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/softprosp/venv/Lib/site-packages" type="simple" />
+            <root url="jar://$USER_HOME$/OneDrive/softprosp/venv/Lib/site-packages/setuptools-28.8.0-py3.6.egg!/" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/softprosp/venv/Lib/site-packages/pip-9.0.1-py3.6.egg" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/1777097455" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/OneDrive/softprosp" />
+    </jdk>
+    <jdk version="2">
+      <name value="Python 3.6 (softprosp)" />
+      <type value="Python SDK" />
+      <version value="Python 3.6.4" />
+      <homePath value="C:\Users\maira\OneDrive\softprosp\venv1\Scripts\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://C:/Program Files/Python36/DLLs" type="simple" />
+            <root url="file://C:/Program Files/Python36/Lib" type="simple" />
+            <root url="file://C:/Program Files/Python36" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/softprosp/venv1" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/softprosp/venv1/Lib/site-packages" type="simple" />
+            <root url="jar://$USER_HOME$/OneDrive/softprosp/venv1/Lib/site-packages/setuptools-28.8.0-py3.6.egg!/" type="simple" />
+            <root url="file://$USER_HOME$/OneDrive/softprosp/venv1/Lib/site-packages/pip-9.0.1-py3.6.egg" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/-1857340340" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/OneDrive/softprosp" />
+    </jdk>
+    <jdk version="2">
+      <name value="Python 3.6 (entorno)" />
+      <type value="Python SDK" />
+      <version value="Python 3.6.3" />
+      <homePath value="D:\entorno\Scripts\python.exe" />
+      <roots>
+        <classPath>
+          <root type="composite">
+            <root url="file://C:/Program Files/Python36/DLLs" type="simple" />
+            <root url="file://C:/Program Files/Python36/Lib" type="simple" />
+            <root url="file://C:/Program Files/Python36" type="simple" />
+            <root url="file://D:/entorno" type="simple" />
+            <root url="file://D:/entorno/Lib/site-packages" type="simple" />
+            <root url="jar://D:/entorno/Lib/site-packages/setuptools-40.8.0-py3.6.egg!/" type="simple" />
+            <root url="file://D:/entorno/Lib/site-packages/pip-19.0.3-py3.6.egg" type="simple" />
+            <root url="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/-1499421056" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/3" type="simple" />
+            <root url="file://$APPLICATION_HOME_DIR$/helpers/typeshed/third_party/2and3" type="simple" />
+          </root>
+        </classPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional ASSOCIATED_PROJECT_PATH="$USER_HOME$/OneDrive/Proyecto/src" />
+    </jdk>
+  </component>
+</application>
