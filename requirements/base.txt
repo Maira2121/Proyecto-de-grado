@@ -1,4 +1,4 @@
-Django==1.11
+Django==2.2.24
 django-autoslug==1.9.3
 Pillow
 django-crispy-forms==1.7.2
